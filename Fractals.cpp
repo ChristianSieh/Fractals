@@ -105,7 +105,13 @@ void keyboard( unsigned char key, int x, int y )
         case EscapeKey:
             exit( 0 );
             break;
-
+        case 106:
+            if(juliaSet)
+                juliaSet = false;
+            else
+                juliaSet = true;
+            glutPostRedisplay();
+            break;
         // anything else redraws window
         default:
             glutPostRedisplay();
@@ -121,16 +127,12 @@ void special( int key, int x, int y )
     switch ( key )
     {
         case GLUT_KEY_LEFT:
-            //xoff -= 5;
             break;
-        case GLUT_KEY_RIGHT:
-            //xoff += 5;
+        case GLUT_KEY_RIGHT:;
             break;
         case GLUT_KEY_UP:
-            //yoff += 5;
             break;
         case GLUT_KEY_DOWN:
-            //yoff -= 5;
             break;
     }
     glutPostRedisplay();
