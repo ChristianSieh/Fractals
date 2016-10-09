@@ -20,7 +20,7 @@ struct complexNum
 void init(void)
 {
     // Set color of display window to white
-    glClearColor(1.0, 1.0, 1.0, 0.0);
+    glClearColor(0.0, 0.0, 0.0, 0.0);
 }
 
 void plotPoint(complexNum z)
@@ -46,7 +46,7 @@ void solveQuadraticEq(complexNum lambda, complexNum * z)
     {
         // Compute the complex number: 4.0 divided by  lambda.
         lambdaMagSq = lambda.x * lambda.x + lambda.y * lambda.y;
-        fourOverLambda.x = 4.0 * lambda.y / lambdaMagSq;
+        fourOverLambda.x = 4.0 * lambda.x / lambdaMagSq;
         fourOverLambda.y = -4.0 * lambda.y / lambdaMagSq;
         firstPoint = false;
     }
@@ -104,7 +104,7 @@ void selfSqTransf(complexNum lambda, complexNum z, GLint numPoints)
 void displayFcn(void)
 {
     GLint numPoints = 10000; // Set number of points to be plotted.
-    complexNum lambda = { 2.0, 1.0 }; // Set complex value for lambda.
+    complexNum lambda = { 3.0, 0.0 }; // Set complex value for lambda.
     complexNum z0 = { 1.5, 0.4 }; // Set initial point in complex plane.
 
     glClear(GL_COLOR_BUFFER_BIT); // Clear display window.
