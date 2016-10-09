@@ -2,120 +2,83 @@
 #include <iostream>
 #include <stdlib.h>
 #include <math.h>
+#include "Mandel.h"
+#include "Julia.h"
+#include "Util.h"
 
 using namespace std;
 
 // Set initial size of display window
-GLsizei winWidth = 600, winHeight = 600;
+GLsizei ScreenWidth = 600, ScreenHeight = 600;
 
 // Set coordinate limits in complex plane
-GLfloat xComplexMin = -0.25, xComplexMax = 1.25;
-GLfloat yComplexMin = -0.75, yComplexMax = 0.75;
+bool juliaSet = false;
 
-struct complexNum
+// keypresses
+const int EscapeKey = 27;
+
+// OpenGL callback function prototypes
+void init( void );
+void display( void );
+void reshape( GLint newWidth, GLint newHeight );
+void keyboard( unsigned char key, int x, int y );
+void special( int key, int x, int y );
+void mouseclick( int button, int state, int x, int y );
+void mousedrag( int x, int y );
+
+int main(int argc, char* argv[])
 {
-    GLfloat x,y;
-};
+    glutInit(&argc, argv);
+    init();
+
+    glutMainLoop();
+
+    return 0;
+}
 
 void init(void)
 {
+    glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB);
+    glutInitWindowPosition(50, 50);
+    glutInitWindowSize(ScreenWidth, ScreenHeight);
+    glutCreateWindow("Fractals");
+    glutDisplayFunc(display);
+    glutReshapeFunc(reshape);
+    glutKeyboardFunc( keyboard );
+    glutSpecialFunc( special );
+    glutMouseFunc( mouseclick );
+
     // Set color of display window to white
     glClearColor(0.0, 0.0, 0.0, 0.0);
 }
 
-void plotPoint(complexNum z)
+void display(void)
 {
-    //cout << z.x << " " << z.y << endl;
-    /*glBegin(GL_LINE_STRIP);
-        glVertex2f(0, 0);
-        glVertex2f(5, 5);
-    glEnd();*/
-    glBegin(GL_POINTS);
-        glVertex2f(z.x, z.y);
-    glEnd();
-}
-
-void solveQuadraticEq(complexNum lambda, complexNum * z)
-{
-    GLfloat lambdaMagSq, discrMag;
-    complexNum discr;
-    static complexNum fourOverLambda = {0.0, 0.0};
-    static GLboolean firstPoint = true;
-
-    if(firstPoint)
+    if(juliaSet)
     {
-        // Compute the complex number: 4.0 divided by  lambda.
-        lambdaMagSq = lambda.x * lambda.x + lambda.y * lambda.y;
-        fourOverLambda.x = 4.0 * lambda.x / lambdaMagSq;
-        fourOverLambda.y = -4.0 * lambda.y / lambdaMagSq;
-        firstPoint = false;
+        GLint numPoints = 10000; // Set number of points to be plotted.
+        complexNum lambda = { 3.0, 0.0 }; // Set complex value for lambda.
+        complexNum z0 = { 1.5, 0.4 }; // Set initial point in complex plane.
+
+        glClear(GL_COLOR_BUFFER_BIT); // Clear display window.
+
+        glColor3f (0.0, 0.0, 1.0); // Set point color blue.
+
+        selfSqTransf(lambda, z0, numPoints);
     }
-
-    discr.x = 1.0 - (z->x * fourOverLambda.x - z->y * fourOverLambda.y);
-    discr.y = z->x * fourOverLambda.y + z->y * fourOverLambda.x;
-    discrMag = sqrt(discr.x * discr.x + discr.y * discr.y);
-
-    // Update z, checking to avoid the square root of a negative number
-    if(discrMag + discr.x < 0)
-        z->x = 0;
     else
-        z->x = sqrt ((discrMag + discr.x) / 2.0);
-
-    if(discrMag - discr.x < 0)
-        z->y = 0;
-    else
-        z->y = 0.5 * sqrt ((discrMag - discr.x) / 2.0);
-
-    // For half the points use negative root, placing point in quadrant 3.
-    if(rand() < RAND_MAX / 2)
     {
-        z->x = -z->x;
-        z->y = -z->y;
+	    /* Set number of x and y subdivisions and the max iterations. */
+	    GLint nx = 1000, ny = 1000, maxIter = 1000;
+	    glClear (GL_COLOR_BUFFER_BIT);
+	    /* Clear display window. */
+	    mandelbrot (nx, ny, maxIter);
     }
 
-    // When imaginary part of discriminant is negative, point
-    // should lie in quadrant 2 or 4, so reverse sign of x.
-    if(discr.y < 0)
-        z->x = -z->x;
-
-    //  Complete the calculation for the real part of z.
-    z->x = 0.5 * (1 - z->x);   
+    glFlush ( );
 }
 
-void selfSqTransf(complexNum lambda, complexNum z, GLint numPoints)
-{
-    GLint k;
-
-    //  Skip the first few points.
-    for(k = 0; k < 10; k++)
-    {        
-        solveQuadraticEq(lambda, &z);
-    }
-    //  Plot the specified number of transformation points.
-    for(k = 0; k < numPoints; k++)
-    {
-        cout << z.x << " " << z.y << " ";
-        solveQuadraticEq(lambda, &z);
-        cout << "After: " << z.x << " " << z.y << endl;
-        plotPoint(z);
-    }
-}
-
-void displayFcn(void)
-{
-    GLint numPoints = 10000; // Set number of points to be plotted.
-    complexNum lambda = { 3.0, 0.0 }; // Set complex value for lambda.
-    complexNum z0 = { 1.5, 0.4 }; // Set initial point in complex plane.
-
-    glClear(GL_COLOR_BUFFER_BIT); // Clear display window.
-
-    glColor3f (0.0, 0.0, 1.0); // Set point color blue.
-
-    selfSqTransf(lambda, z0, numPoints);
-    glFlush();
-}
-
-void winReshapeFcn(GLint newWidth, GLint newHeight)
+void reshape(GLint newWidth, GLint newHeight)
 {
     // Maintain an aspect ration of 1.0, assuming that width
     // of complex window = height of complex window.
@@ -128,28 +91,75 @@ void winReshapeFcn(GLint newWidth, GLint newHeight)
     glClear(GL_COLOR_BUFFER_BIT);
 }
 
-int main(int argc, char* argv[])
+// callback function that tells OpenGL how to handle keystrokes
+void keyboard( unsigned char key, int x, int y )
 {
-    glutInit(&argc, argv);
-    glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB);
-    glutInitWindowPosition(50, 50);
-    glutInitWindowSize(winWidth, winHeight);
-    glutCreateWindow("Self-Squaring Fractal");
+    // correct for upside-down screen coordinates
+    y = ScreenHeight - y;
+    cerr << "keypress: " << key << " (" << int( key ) << ") at (" << x << "," << y << ")\n";
 
-    init();
-    glutDisplayFunc(displayFcn);
-    glutReshapeFunc(winReshapeFcn);
+    // process keypresses
+    switch ( key )
+    {
+        // Escape quits program
+        case EscapeKey:
+            exit( 0 );
+            break;
 
-    glutMainLoop();
-
-    return 0;
+        // anything else redraws window
+        default:
+            glutPostRedisplay();
+            break;
+    }
 }
 
+// callback function that tells OpenGL how to handle keystrokes
+// used to move OpenGL bitmap string with arrow keys
+void special( int key, int x, int y )
+{
+    // process keypresses
+    switch ( key )
+    {
+        case GLUT_KEY_LEFT:
+            //xoff -= 5;
+            break;
+        case GLUT_KEY_RIGHT:
+            //xoff += 5;
+            break;
+        case GLUT_KEY_UP:
+            //yoff += 5;
+            break;
+        case GLUT_KEY_DOWN:
+            //yoff -= 5;
+            break;
+    }
+    glutPostRedisplay();
+}
 
+// callback function for mouse button click events
+void mouseclick( int button, int state, int x, int y )
+{
+    // correct for upside-down screen coordinates
+    y = ScreenHeight - y;
 
+    // handle mouse click events
+    switch ( button )
+    {
+        case GLUT_LEFT_BUTTON:              // left button
+            if ( state == GLUT_DOWN )           // press
+                cerr << "mouse click: left press at    (" << x << "," << y << ")\n";
+            else if ( state == GLUT_UP )        // release
+                cerr << "mouse click: left release at  (" << x << "," << y << ")\n";
+            break;
 
-
-
+        case GLUT_RIGHT_BUTTON:             // right button
+            if ( state == GLUT_DOWN )           // press
+                cerr << "mouse click: right press at   (" << x << "," << y << ")\n";
+            else if ( state == GLUT_UP )        // release
+                cerr << "mouse click: right release at (" << x << "," << y << ")\n";
+            break;
+    }
+}
 
 
 

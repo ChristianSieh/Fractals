@@ -36,7 +36,7 @@ GL_LIBS = -lglut -lGLU -lGL -lm
 all:    Fractals
 
 # specific targets
-Fractals:	Fractals.o
+Fractals:	Fractals.o Julia.o Mandel.o Util.o
 	$(LINK) -o $@ $^ $(GL_LIBS)
 
 # generic C and C++ targets for OpenGL programs consisting of only one file
