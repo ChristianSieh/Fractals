@@ -24,7 +24,7 @@ GLint mandelSqTransf (complexNum z0, GLint maxIter)
 	return count;
 }
 
-void mandelbrot (GLint nx, GLint ny, GLint maxIter)
+void mandelbrot (GLint nx, GLint ny, GLint maxIter, vector<complexNum> &points)
 {
 	complexNum z, zIncr;
 	color ptColor;
@@ -71,8 +71,19 @@ void mandelbrot (GLint nx, GLint ny, GLint maxIter)
 			}
 			/* Plot the color point. */
 			glColor3f (ptColor.r, ptColor.g, ptColor.b);
-			plotPoint (z);
-
+			points.push_back(z);
 	}
+}
+
+void mandelInit(vector<complexNum> &points)
+{
+    /* Set number of x and y subdivisions and the max iterations. */
+    GLint nx = 1000, ny = 1000, maxIter = 1000;
+    glClear (GL_COLOR_BUFFER_BIT);
+
+    points.empty();
+
+    /* Clear display window. */
+    mandelbrot (nx, ny, maxIter, points);
 }
 

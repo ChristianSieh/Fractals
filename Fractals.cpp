@@ -12,7 +12,8 @@ using namespace std;
 GLsizei ScreenWidth = 600, ScreenHeight = 600;
 
 // Set coordinate limits in complex plane
-bool juliaSet = false;
+bool juliaSet = true;
+vector<complexNum> points;
 
 // keypresses
 const int EscapeKey = 27;
@@ -30,6 +31,15 @@ int main(int argc, char* argv[])
 {
     glutInit(&argc, argv);
     init();
+
+    if(juliaSet)
+    {
+        juliaInit(points);
+    }
+    else
+    {
+        mandelInit(points);
+    }
 
     glutMainLoop();
 
@@ -54,25 +64,11 @@ void init(void)
 
 void display(void)
 {
-    if(juliaSet)
+    glClear(GL_COLOR_BUFFER_BIT);
+
+    for(unsigned int i = 0; i < points.size(); i++)
     {
-        GLint numPoints = 10000; // Set number of points to be plotted.
-        complexNum lambda = { 3.0, 0.0 }; // Set complex value for lambda.
-        complexNum z0 = { 1.5, 0.4 }; // Set initial point in complex plane.
-
-        glClear(GL_COLOR_BUFFER_BIT); // Clear display window.
-
-        glColor3f (0.0, 0.0, 1.0); // Set point color blue.
-
-        selfSqTransf(lambda, z0, numPoints);
-    }
-    else
-    {
-	    /* Set number of x and y subdivisions and the max iterations. */
-	    GLint nx = 1000, ny = 1000, maxIter = 1000;
-	    glClear (GL_COLOR_BUFFER_BIT);
-	    /* Clear display window. */
-	    mandelbrot (nx, ny, maxIter);
+        plotPoint(points[i]);
     }
 
     glFlush ( );
@@ -107,9 +103,15 @@ void keyboard( unsigned char key, int x, int y )
             break;
         case 106:
             if(juliaSet)
+            {
+                mandelInit(points);
                 juliaSet = false;
+            }
             else
+            {
+                juliaInit(points);
                 juliaSet = true;
+            }
             glutPostRedisplay();
             break;
         // anything else redraws window
@@ -127,12 +129,28 @@ void special( int key, int x, int y )
     switch ( key )
     {
         case GLUT_KEY_LEFT:
+            for(unsigned int i = 0; i < points.size(); i++)
+            {
+                points[i].x -= .1;
+            }
             break;
         case GLUT_KEY_RIGHT:;
+            for(unsigned int i = 0; i < points.size(); i++)
+            {
+                points[i].x += .1;
+            }
             break;
         case GLUT_KEY_UP:
+            for(unsigned int i = 0; i < points.size(); i++)
+            {
+                points[i].y += .1;
+            }
             break;
         case GLUT_KEY_DOWN:
+            for(unsigned int i = 0; i < points.size(); i++)
+            {
+                points[i].y -= .1;
+            }
             break;
     }
     glutPostRedisplay();
