@@ -21,6 +21,7 @@
 #include <math.h>
 #include "Mandel.h"
 //#include "Julia.h"
+#include "Colors.h"
 #include "Util.h"
 
 using namespace std;
@@ -57,6 +58,8 @@ int main(int argc, char* argv[])
     glutInit(&argc, argv);
     init();
 
+    setColorMap(1);
+    
     if(juliaSet)
     {
         //juliaInit(points);
@@ -65,7 +68,6 @@ int main(int argc, char* argv[])
     {
         mandelInit(points);
     }
-
     glutMainLoop();
 
     return 0;
@@ -150,7 +152,8 @@ void keyboard( unsigned char key, int x, int y )
         case EscapeKey:
             exit( 0 );
             break;
-        case 106:
+	// key: j - switches between julia and mandelbrot sets
+        case 106: 
             if(juliaSet)
             {
                 mandelInit(points);
@@ -163,8 +166,19 @@ void keyboard( unsigned char key, int x, int y )
             }
             glutPostRedisplay();
             break;
+	// key: c - change color map
+	case 99:
+	    changeColorMap(); 
+	    glutPostRedisplay();
+	    break;
+	// key: r - generate random color map
+	case 114:
+	    break;
+	// key: h - prints debug help
 	case 104:
 	    cerr << "size of points: " << points.size() << "\n";
+	    printColorMap();
+	    break;
         // anything else redraws window
         default:
             glutPostRedisplay();

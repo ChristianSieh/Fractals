@@ -93,66 +93,59 @@ void mandelbrot ( GLint nx, GLint ny, GLint maxIter, vector<point> &points )
             if ( iterCount >= maxIter )
             {
                 /* Set point color to black. */
-                //ptColor.r = ptColor.g = ptColor.b = 0.0;
-                currPoint.r = 0.0;
-		currPoint.g = 0.0;
-                currPoint.b = 0.0;
+                currPoint.r = currColorMap[0].r;
+		currPoint.g = currColorMap[0].g;
+                currPoint.b = currColorMap[0].b;
+                currPoint.colorSpot = 0;
                 
             }
             else if ( iterCount > ( maxIter / 8 ) )
             {
                 /* Set point color to orange. */
-                /*ptColor.r = 1.0;
-                ptColor.g = 0.5;
-                ptColor.b = 0.0;*/
-		currPoint.r = 1.0;
-		currPoint.g = 0.5;
-                currPoint.b = 0.0;
+		currPoint.r = currColorMap[1].r;
+		currPoint.g = currColorMap[1].g;
+                currPoint.b = currColorMap[1].b;
+		currPoint.colorSpot = 1;
             }
             else if ( iterCount > ( maxIter / 10 ) )
             {
                 /* Set point color to red. */
-                /*ptColor.r = 1.0;
-                ptColor.g = ptColor.b = 0.0;*/
-		currPoint.r = 1.0;
-		currPoint.g = 0.0;
-                currPoint.b = 0.0;
+		currPoint.r = currColorMap[2].r;
+		currPoint.g = currColorMap[2].g;
+                currPoint.b = currColorMap[2].b;
+                currPoint.colorSpot = 2;
             }
             else if ( iterCount > ( maxIter / 20 ) )
             {
                 /* Set point color to dark blue. */
-                /*ptColor.b = 0.5;
-                ptColor.r = ptColor.g = 0.0;*/
-		currPoint.r = 0.0;
-		currPoint.g = 0.0;
-                currPoint.b = 0.5;
+		currPoint.r = currColorMap[3].r;
+		currPoint.g = currColorMap[3].g;
+                currPoint.b = currColorMap[3].b;
+                currPoint.colorSpot = 3;
             }
             else if ( iterCount > ( maxIter / 40 ) )
             {
                 /* Set point color to yellow. */
-                /*ptColor.r = ptColor.g = 1.0;
-                ptColor.b = 0.0;*/
-		currPoint.r = 1.0;
-		currPoint.g = 1.0;
-                currPoint.b = 0.0;
+		currPoint.r = currColorMap[4].r;
+		currPoint.g = currColorMap[4].g;
+                currPoint.b = currColorMap[4].b;
+                currPoint.colorSpot = 4;
             }
             else if ( iterCount > ( maxIter / 100 ) )
             {
                 /* Set point color to dark green. */
-                /*ptColor.r = ptColor.b = 0.0;
-                ptColor.g = 0.3;*/
-		currPoint.r = 0.0;
-		currPoint.g = 0.0;
-                currPoint.b = 0.3;
+		currPoint.r = currColorMap[5].r;
+		currPoint.g = currColorMap[5].g;
+                currPoint.b = currColorMap[5].b;
+                currPoint.colorSpot = 5;
             }
             else
             {
                 /* Set point color to cyan. */
-                /*ptColor.r = 0.0;
-                ptColor.g = ptColor.b = 1.0;*/
-		currPoint.r = 0.0;
-		currPoint.g = 1.0;
-                currPoint.b = 1.0;
+		currPoint.r = currColorMap[6].r;
+		currPoint.g = currColorMap[6].g;
+                currPoint.b = currColorMap[6].b;
+                currPoint.colorSpot = 6;
             }
             /* Plot the color point. */
             //glColor3f (ptColor.r, ptColor.g, ptColor.b);
