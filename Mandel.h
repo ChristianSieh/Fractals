@@ -11,7 +11,7 @@ using namespace std;
 
 complexNum complexSquare(complexNum z);
 GLint mandelSqTransf(complexNum z0, GLint maxIter);
-void mandelbrot(GLint nx, GLint ny, GLint maxIter, vector<complexNum> &points);
-void mandelInit(vector<complexNum> &points);
+void mandelbrot(GLint nx, GLint ny, GLint maxIter, vector<point> &points);
+void mandelInit(vector<point> &points);
 
 #endif

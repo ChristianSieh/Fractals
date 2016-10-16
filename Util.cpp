@@ -15,17 +15,20 @@
    ----    ------------------------------------------------
  ************************************************************************/
 #include "Util.h"
+
  /************************************************************************
    Function:
    Author:
    Description:
    Parameters:
  ************************************************************************/
-void plotPoint (complexNum z)
+void plotPoint (point z)
 {
-    glColor3f (0.0, 0.0, 1.0); // Set point color blue.
+    /*set color to point color*/
+    glColor3f (z.r, z.g, z.g);
 
-	glBegin (GL_POINTS);
-	    glVertex2f (z.x, z.y);
-	glEnd ( );
+    /*plot point*/
+    glBegin (GL_POINTS);
+        glVertex2f (z.x, z.y);
+    glEnd ( );
 }

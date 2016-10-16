@@ -67,10 +67,11 @@ GLint mandelSqTransf ( complexNum z0, GLint maxIter )
        Glint maxIter
        vector<complexNum> &points -
 ************************************************************************/
-void mandelbrot ( GLint nx, GLint ny, GLint maxIter, vector<complexNum> &points )
+void mandelbrot ( GLint nx, GLint ny, GLint maxIter, vector<point> &points )
 {
     complexNum z, zIncr;
-    color ptColor;
+    //color ptColor;
+    point currPoint;
     GLint iterCount;
 
     zIncr.x = complexWidth / GLfloat ( nx );
@@ -80,52 +81,82 @@ void mandelbrot ( GLint nx, GLint ny, GLint maxIter, vector<complexNum> &points 
     {
         for ( z.y = yComplexMin; z.y < yComplexMax; z.y += zIncr.y )
         {
+	    
+	    /* Calculate point value */ 
             iterCount = mandelSqTransf ( z, maxIter );
+
+	    /* Save point values to point */
+	    currPoint.x = z.x;
+	    currPoint.y = z.y;
+	
+	    /* Set color based on value*/
             if ( iterCount >= maxIter )
             {
                 /* Set point color to black. */
-                ptColor.r = ptColor.g = ptColor.b = 0.0;
+                //ptColor.r = ptColor.g = ptColor.b = 0.0;
+                currPoint.r = 0.0;
+		currPoint.g = 0.0;
+                currPoint.b = 0.0;
+                
             }
             else if ( iterCount > ( maxIter / 8 ) )
             {
                 /* Set point color to orange. */
-                ptColor.r = 1.0;
+                /*ptColor.r = 1.0;
                 ptColor.g = 0.5;
-                ptColor.b = 0.0;
+                ptColor.b = 0.0;*/
+		currPoint.r = 1.0;
+		currPoint.g = 0.5;
+                currPoint.b = 0.0;
             }
             else if ( iterCount > ( maxIter / 10 ) )
             {
                 /* Set point color to red. */
-                ptColor.r = 1.0;
-                ptColor.g = ptColor.b = 0.0;
+                /*ptColor.r = 1.0;
+                ptColor.g = ptColor.b = 0.0;*/
+		currPoint.r = 1.0;
+		currPoint.g = 0.0;
+                currPoint.b = 0.0;
             }
             else if ( iterCount > ( maxIter / 20 ) )
             {
                 /* Set point color to dark blue. */
-                ptColor.b = 0.5;
-                ptColor.r = ptColor.g = 0.0;
+                /*ptColor.b = 0.5;
+                ptColor.r = ptColor.g = 0.0;*/
+		currPoint.r = 0.0;
+		currPoint.g = 0.0;
+                currPoint.b = 0.5;
             }
             else if ( iterCount > ( maxIter / 40 ) )
             {
                 /* Set point color to yellow. */
-                ptColor.r = ptColor.g = 1.0;
-                ptColor.b = 0.0;
+                /*ptColor.r = ptColor.g = 1.0;
+                ptColor.b = 0.0;*/
+		currPoint.r = 1.0;
+		currPoint.g = 1.0;
+                currPoint.b = 0.0;
             }
             else if ( iterCount > ( maxIter / 100 ) )
             {
                 /* Set point color to dark green. */
-                ptColor.r = ptColor.b = 0.0;
-                ptColor.g = 0.3;
+                /*ptColor.r = ptColor.b = 0.0;
+                ptColor.g = 0.3;*/
+		currPoint.r = 0.0;
+		currPoint.g = 0.0;
+                currPoint.b = 0.3;
             }
             else
             {
                 /* Set point color to cyan. */
-                ptColor.r = 0.0;
-                ptColor.g = ptColor.b = 1.0;
+                /*ptColor.r = 0.0;
+                ptColor.g = ptColor.b = 1.0;*/
+		currPoint.r = 0.0;
+		currPoint.g = 1.0;
+                currPoint.b = 1.0;
             }
             /* Plot the color point. */
             //glColor3f (ptColor.r, ptColor.g, ptColor.b);
-            points.push_back ( z );
+            points.push_back ( currPoint );
         }
     }
 }
@@ -136,7 +167,7 @@ void mandelbrot ( GLint nx, GLint ny, GLint maxIter, vector<complexNum> &points 
   Description:
   Parameters:
 ************************************************************************/
-void mandelInit ( vector<complexNum> &points )
+void mandelInit ( vector<point> &points )
 {
     /* Set number of x and y subdivisions and the max iterations. */
     GLint nx = 1000, ny = 1000, maxIter = 1000;

@@ -30,7 +30,7 @@ GLsizei ScreenWidth = 600, ScreenHeight = 600;
 
 // Set coordinate limits in complex plane
 bool juliaSet = false;
-vector<complexNum> points;
+vector<point> points;
 
 // keypresses
 const int EscapeKey = 27;
