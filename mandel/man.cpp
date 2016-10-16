@@ -1,4 +1,6 @@
 #include <GL/glut.h>
+#include <iostream>
+using namespace std;
 
 /* Set initial size of the display window. */
 GLsizei winWidth = 500, winHeight = 500;
@@ -65,12 +67,15 @@ void mandelbrot (GLint nx, GLint ny, GLint maxIter)
    color ptColor;
    GLint iterCount;
 
+   int pointCount = 0;
+
    zIncr.x = complexWidth / GLfloat (nx);
    zIncr.y = complexHeight / GLfloat (ny);
 
    for (z.x = xComplexMin; z.x < xComplexMax; z.x += zIncr.x)
       for (z.y = yComplexMin; z.y < yComplexMax; z.y += zIncr.y)
       {
+         pointCount++;
          iterCount = mandelSqTransf (z, maxIter);
 
          if (iterCount >= maxIter)
@@ -119,6 +124,8 @@ void mandelbrot (GLint nx, GLint ny, GLint maxIter)
          plotPoint (z);
 
       }
+
+    cerr << "number of points: " << pointCount << "\n";
 }
 
 void displayFcn (void)

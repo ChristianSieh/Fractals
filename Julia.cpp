@@ -1,4 +1,28 @@
+ /************************************************************************
+   Program: 
+   Author: 
+   Class:
+   Instructor:
+   Date:
+   Description:    (program requirements)
+   Input:
+   Output:
+   Compilation instructions:
+   Usage:
+   Known bugs/missing features:
+   Modifications:
+   Date                Comment            
+   ----    ------------------------------------------------
+ ************************************************************************/
+
 #include "Julia.h"
+
+ /************************************************************************
+   Function:
+   Author:
+   Description:
+   Parameters:
+ ************************************************************************/
 
 void solveQuadraticEq(complexNum lambda, complexNum * z)
 {
@@ -47,6 +71,12 @@ void solveQuadraticEq(complexNum lambda, complexNum * z)
     z->x = 0.5 * (1 - z->x);   
 }
 
+ /************************************************************************
+   Function:
+   Author:
+   Description:
+   Parameters:
+ ************************************************************************/
 void selfSqTransf(complexNum lambda, complexNum z, GLint numPoints, vector<complexNum> &points)
 {
     GLint k;
@@ -64,6 +94,12 @@ void selfSqTransf(complexNum lambda, complexNum z, GLint numPoints, vector<compl
     }
 }
 
+ /************************************************************************
+   Function:
+   Author:
+   Description:
+   Parameters:
+ ************************************************************************/
 void juliaInit(vector<complexNum> &points)
 {
     GLint numPoints = 10000; // Set number of points to be plotted.

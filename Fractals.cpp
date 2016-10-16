@@ -1,9 +1,26 @@
+ /************************************************************************
+   Program: 
+   Author: 
+   Class:
+   Instructor:
+   Date:
+   Description:    (program requirements)
+   Input:
+   Output:
+   Compilation instructions:
+   Usage:
+   Known bugs/missing features:
+   Modifications:
+   Date                Comment            
+   ----    ------------------------------------------------
+ ************************************************************************/
+
 #include <GL/freeglut.h>
 #include <iostream>
 #include <stdlib.h>
 #include <math.h>
 #include "Mandel.h"
-#include "Julia.h"
+//#include "Julia.h"
 #include "Util.h"
 
 using namespace std;
@@ -12,13 +29,15 @@ using namespace std;
 GLsizei ScreenWidth = 600, ScreenHeight = 600;
 
 // Set coordinate limits in complex plane
-bool juliaSet = true;
+bool juliaSet = false;
 vector<complexNum> points;
 
 // keypresses
 const int EscapeKey = 27;
 
 // OpenGL callback function prototypes
+
+ /*********************** function prototypes ***************************/
 void init( void );
 void display( void );
 void reshape( GLint newWidth, GLint newHeight );
@@ -27,6 +46,12 @@ void special( int key, int x, int y );
 void mouseclick( int button, int state, int x, int y );
 void mousedrag( int x, int y );
 
+ /************************************************************************
+   Function:
+   Author:
+   Description:
+   Parameters:
+ ************************************************************************/
 int main(int argc, char* argv[])
 {
     glutInit(&argc, argv);
@@ -34,7 +59,7 @@ int main(int argc, char* argv[])
 
     if(juliaSet)
     {
-        juliaInit(points);
+        //juliaInit(points);
     }
     else
     {
@@ -46,6 +71,12 @@ int main(int argc, char* argv[])
     return 0;
 }
 
+ /************************************************************************
+   Function:
+   Author:
+   Description:
+   Parameters:
+ ************************************************************************/
 void init(void)
 {
     glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB);
@@ -62,6 +93,12 @@ void init(void)
     glClearColor(0.0, 0.0, 0.0, 0.0);
 }
 
+ /************************************************************************
+   Function:
+   Author:
+   Description:
+   Parameters:
+ ************************************************************************/
 void display(void)
 {
     glClear(GL_COLOR_BUFFER_BIT);
@@ -74,6 +111,12 @@ void display(void)
     glFlush ( );
 }
 
+ /************************************************************************
+   Function:
+   Author:
+   Description:
+   Parameters:
+ ************************************************************************/
 void reshape(GLint newWidth, GLint newHeight)
 {
     // Maintain an aspect ration of 1.0, assuming that width
@@ -87,6 +130,12 @@ void reshape(GLint newWidth, GLint newHeight)
     glClear(GL_COLOR_BUFFER_BIT);
 }
 
+ /************************************************************************
+   Function:
+   Author:
+   Description:
+   Parameters:
+ ************************************************************************/
 // callback function that tells OpenGL how to handle keystrokes
 void keyboard( unsigned char key, int x, int y )
 {
@@ -109,11 +158,13 @@ void keyboard( unsigned char key, int x, int y )
             }
             else
             {
-                juliaInit(points);
+                //juliaInit(points);
                 juliaSet = true;
             }
             glutPostRedisplay();
             break;
+	case 104:
+	    cerr << "size of points: " << points.size() << "\n";
         // anything else redraws window
         default:
             glutPostRedisplay();
@@ -121,6 +172,12 @@ void keyboard( unsigned char key, int x, int y )
     }
 }
 
+ /************************************************************************
+   Function:
+   Author:
+   Description:
+   Parameters:
+ ************************************************************************/
 // callback function that tells OpenGL how to handle keystrokes
 // used to move OpenGL bitmap string with arrow keys
 void special( int key, int x, int y )
@@ -155,7 +212,12 @@ void special( int key, int x, int y )
     }
     glutPostRedisplay();
 }
-
+ /************************************************************************
+   Function:
+   Author:
+   Description:
+   Parameters:
+ ************************************************************************/
 // callback function for mouse button click events
 void mouseclick( int button, int state, int x, int y )
 {
