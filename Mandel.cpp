@@ -81,21 +81,19 @@ void mandelbrot ( GLint nx, GLint ny, GLint maxIter, vector<point> &points )
     {
         for ( z.y = yComplexMin; z.y < yComplexMax; z.y += zIncr.y )
         {
-	    
-	    /* Calculate point value */ 
-            iterCount = mandelSqTransf ( z, maxIter );
+	        /* Calculate point value */ 
+                iterCount = mandelSqTransf ( z, maxIter );
 
-	    /* Save point values to point */
-	    currPoint.x = z.x;
-	    currPoint.y = z.y;
+	        /* Save point values to point */
+	        currPoint.x = z.x;
+	        currPoint.y = z.y;
 	
-	    currPoint.colorSpot = iterCount;
-           
-             
-	    points.push_back ( currPoint );
+	        currPoint.colorSpot = iterCount;
+               
+	        points.push_back ( currPoint );
         }
     }
-    cerr << "end calc points: " << points.size() << endl;
+    //cerr << "end calc points: " << points.size() << endl;
 }
 
 /************************************************************************

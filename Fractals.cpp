@@ -69,8 +69,8 @@ int main(int argc, char* argv[])
     else
     {
         mandelInit(points);
-	setColorMap(points);
-	cerr << " before main loop points: " << points.size() << endl;
+	    setColorMap(points);
+	    //cerr << " before main loop points: " << points.size() << endl;
     }
     glutMainLoop();
 
@@ -114,12 +114,12 @@ void initRendering()
 void display(void)
 {
     glClear(GL_COLOR_BUFFER_BIT);
-    cerr << "preplot: " << points.size() << endl;
+    //cerr << "preplot: " << points.size() << endl;
     for(unsigned int i = 0; i < points.size(); i++)
     {
         plotPoint(points[i]);
     }
-    cerr << "end plot" << endl;
+    //cerr << "end plot" << endl;
     glutSwapBuffers();
     glFlush ( );
 }
@@ -184,6 +184,8 @@ void keyboard( unsigned char key, int x, int y )
 	    break;
 	// key: r - generate random color map
 	case 114:
+        randomColorMap(points);
+        glutPostRedisplay();
 	    break;
 	// key: h - prints debug help
 	case 104:
