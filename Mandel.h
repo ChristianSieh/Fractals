@@ -5,7 +5,7 @@
 #include <stdlib.h>
 #include <math.h>
 #include "Util.h"
-#include "Colors.h"
+//#include "Colors.h"
 #include <GL/freeglut.h>
 
 using namespace std;

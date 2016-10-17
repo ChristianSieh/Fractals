@@ -9,21 +9,17 @@
 
 using namespace std;
 
-static int currColorMapNum = 0;
-static const int maxColorMapNum = 2;  // total number of color maps
-static color currColorMap[7] = {{0.0, 0.0, 0.0},{1.0, 0.5, 0.0},{1.0, 0.0, 0.0},
-			   {0.0,0.0,0.5},{1.0, 1.0, 0.0},{0.0,0.0,0.3},{0.0, 1.0, 1.0}};
+//static int currColorMapNum = 0;
+//static const int maxColorMapNum = 2;  // total number of color maps
 
-// 2 color maps
-static const color colorMaps[][7] ={
-	{{0.0, 0.0, 0.0},{1.0, 0.5, 0.0},{1.0, 0.0, 0.0},{0.0,0.0,0.5},{1.0, 1.0, 0.0},{0.0,0.0,0.3},{0.0, 1.0, 1.0}},
-	{{1.0, 0.0, 0.0},{0.3, 0.5, 0.0},{0.5, 0.0, 0.5},{1.0,0.0,0.5},{1.0, 0.0, 0.0},{0.2,0.8,0.3},{0.8, 0.0, 1.0}}
 
-	};
 
-void setColorMap(int map);
+static GLfloat rmod = 10, gmod = 1, bmod = 30;
+static GLfloat ron = 1, gon = 0, bon = 1;
+static int colorRotate = 0;
+
+void setColorMap(vector<point> &points);
 void randomColorMap();
 void printColorMap();
-void changeColorMap();
-void swapColor();
+void swapColor(vector<point> &points);
 #endif

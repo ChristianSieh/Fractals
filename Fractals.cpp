@@ -36,10 +36,13 @@ vector<point> points;
 // keypresses
 const int EscapeKey = 27;
 
-// OpenGL callback function prototypes
+//Global varables
+double zoomVal = 0;
 
- /*********************** function prototypes ***************************/
+
+/*********************** function prototypes ***************************/
 void init( void );
+void initRendering();
 void display( void );
 void reshape( GLint newWidth, GLint newHeight );
 void keyboard( unsigned char key, int x, int y );
@@ -58,7 +61,6 @@ int main(int argc, char* argv[])
     glutInit(&argc, argv);
     init();
 
-    setColorMap(1);
     
     if(juliaSet)
     {
@@ -67,6 +69,8 @@ int main(int argc, char* argv[])
     else
     {
         mandelInit(points);
+	setColorMap(points);
+	cerr << " before main loop points: " << points.size() << endl;
     }
     glutMainLoop();
 
@@ -81,10 +85,11 @@ int main(int argc, char* argv[])
  ************************************************************************/
 void init(void)
 {
-    glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB);
+    glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB );// | GLUT_DEPTH);
     glutInitWindowPosition(50, 50);
     glutInitWindowSize(ScreenWidth, ScreenHeight);
     glutCreateWindow("Fractals");
+    //initRendering();
     glutDisplayFunc(display);
     glutReshapeFunc(reshape);
     glutKeyboardFunc( keyboard );
@@ -93,6 +98,11 @@ void init(void)
 
     // Set color of display window to white
     glClearColor(0.0, 0.0, 0.0, 0.0);
+}
+
+void initRendering()
+{
+    glEnable(GL_DEPTH_TEST);
 }
 
  /************************************************************************
@@ -104,12 +114,13 @@ void init(void)
 void display(void)
 {
     glClear(GL_COLOR_BUFFER_BIT);
-
+    cerr << "preplot: " << points.size() << endl;
     for(unsigned int i = 0; i < points.size(); i++)
     {
         plotPoint(points[i]);
     }
-
+    cerr << "end plot" << endl;
+    glutSwapBuffers();
     glFlush ( );
 }
 
@@ -168,7 +179,7 @@ void keyboard( unsigned char key, int x, int y )
             break;
 	// key: c - change color map
 	case 99:
-	    changeColorMap(); 
+	    swapColor(points); 
 	    glutPostRedisplay();
 	    break;
 	// key: r - generate random color map
@@ -177,7 +188,23 @@ void keyboard( unsigned char key, int x, int y )
 	// key: h - prints debug help
 	case 104:
 	    cerr << "size of points: " << points.size() << "\n";
-	    printColorMap();
+	    cerr << "zoomVal: " << zoomVal << endl;
+	    //printColorMap();
+	    break;
+	// key: - - zoom out
+	case 45:
+	    if( zoomVal > 0 )
+	    {
+	        zoomVal -= 1;
+            }
+	    glutPostRedisplay();
+	    break;
+	// key: = - alt for + on laptops
+	case 61:
+	// key: + - zoom in
+	case 43:
+	    zoomVal += 1;
+	    glutPostRedisplay();
 	    break;
         // anything else redraws window
         default:

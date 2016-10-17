@@ -21,7 +21,7 @@ struct point
 {
     GLfloat x,y;      //point
     GLfloat r, g, b;  //color value
-    int colorSpot;
+    GLint colorSpot;
 };
 
 static GLfloat xComplexMin = -2.00, xComplexMax = 0.50;
@@ -29,6 +29,7 @@ static GLfloat yComplexMin = -1.25, yComplexMax = 1.25;
 static GLfloat complexWidth = xComplexMax - xComplexMin;
 static GLfloat complexHeight = yComplexMax - yComplexMin;
 
-void plotPoint(point z);
 
+void plotPoint(point z);
+void printPoint(point z);
 #endif
