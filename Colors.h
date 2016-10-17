@@ -13,10 +13,9 @@ using namespace std;
 //static int currColorMapNum = 0;
 //static const int maxColorMapNum = 2;  // total number of color maps
 
-random_device rd;
-mt19937 mt(rd());
-uniform_real_distribution<double> color(0.0, 1.0);
-
+static random_device rd;
+static mt19937 mt(rd());
+static uniform_real_distribution<double> color(0.0, 1.0);
 static GLfloat ron = .1, gon = 0, bon = float(1) / 30;
 static int colorRotate = 0;
 

@@ -82,7 +82,7 @@ void mandelbrot ( GLint nx, GLint ny, GLint maxIter, vector<point> &points )
         for ( z.y = yComplexMin; z.y < yComplexMax; z.y += zIncr.y )
         {
 	        /* Calculate point value */ 
-                iterCount = mandelSqTransf ( z, maxIter );
+            iterCount = mandelSqTransf ( z, maxIter );
 
 	        /* Save point values to point */
 	        currPoint.x = z.x;
@@ -110,7 +110,7 @@ void mandelInit ( vector<point> &points )
     GLint nx = 1000, ny = 1000, maxIter = 1000;
     glClear ( GL_COLOR_BUFFER_BIT );
 
-    points.empty();
+    points.clear();
 
     /* Clear display window. */
     mandelbrot ( nx, ny, maxIter, points );
