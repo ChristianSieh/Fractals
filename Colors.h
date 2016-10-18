@@ -1,3 +1,15 @@
+/************************************************************************
+   Program: Fractals
+   Author: Charles Bonn
+   Class: csc433
+   Date: 10/27/2016
+   Description: Header file for the Color functions
+   Known bugs/missing features:
+   Modifications:
+   Date                Comment            
+   ----    ------------------------------------------------
+ ************************************************************************/
+
 #ifndef COLOR_H
 #define COLOR_H
 
@@ -6,20 +18,16 @@
 #include <stdlib.h>
 #include <time.h>
 #include "Util.h"
+#include <vector>
+#include <math.h>
 
 using namespace std;
 
-//static int currColorMapNum = 0;
-//static const int maxColorMapNum = 2;  // total number of color maps
-
-
-
-static GLfloat rmod = 10, gmod = 1, bmod = 30;
-static GLfloat ron = 1, gon = 0, bon = 1;
-static int colorRotate = 0;
-
+/*********************** function prototypes ***************************/
 void setColorMap(vector<point> &points);
-void randomColorMap();
+void randomColorMap(vector<point> &points);
 void printColorMap();
 void swapColor(vector<point> &points);
+void animateColor(vector<point> &points);
+
 #endif

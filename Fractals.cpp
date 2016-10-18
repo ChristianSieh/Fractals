@@ -1,14 +1,14 @@
  /************************************************************************
-   Program: 
-   Author: 
-   Class:
-   Instructor:
-   Date:
+   Program: Fractals
+   Author: Charles Bonn and Christian Sieh
+   Class: csc433
+   Instructor: John Weiss
+   Date: 10/27/2016
    Description:    (program requirements)
-   Input:
-   Output:
-   Compilation instructions:
-   Usage:
+   Input: None
+   Output: Graphical window with Mandelbrot set
+   Compilation instructions: run make file
+   Usage: ./Fractals
    Known bugs/missing features:
    Modifications:
    Date                Comment            
@@ -31,6 +31,8 @@ GLsizei ScreenWidth = 600, ScreenHeight = 600;
 
 // Set coordinate limits in complex plane
 bool juliaSet = false;
+bool animation = false;
+int animationSpeed = 100;
 vector<point> points;
 
 // keypresses
@@ -42,8 +44,8 @@ double zoomVal = 0;
 
 /*********************** function prototypes ***************************/
 void init( void );
-void initRendering();
 void display( void );
+void update( int value );
 void reshape( GLint newWidth, GLint newHeight );
 void keyboard( unsigned char key, int x, int y );
 void special( int key, int x, int y );
@@ -51,45 +53,41 @@ void mouseclick( int button, int state, int x, int y );
 void mousedrag( int x, int y );
 
  /************************************************************************
-   Function:
-   Author:
-   Description:
-   Parameters:
+   Function: main
+   Author: Charles Bonn and Christian Sieh
+   Description: main function of the program. makes initilization calls
+		and starts the main glut loop
+   Parameters: int argc - number of arguments
+	       char* argv[] - argument values
  ************************************************************************/
 int main(int argc, char* argv[])
 {
+    /* main initilizations */
     glutInit(&argc, argv);
     init();
-
-    
-    if(juliaSet)
-    {
-        //juliaInit(points);
-    }
-    else
-    {
-        mandelInit(points);
-	setColorMap(points);
-	cerr << " before main loop points: " << points.size() << endl;
-    }
+    /* initilize points */
+    mandelInit(points);
+    setColorMap(points);
+    /* start timer */
+    glutTimerFunc( animationSpeed, update, 0 );
+    /* start main loop */
     glutMainLoop();
 
     return 0;
 }
 
  /************************************************************************
-   Function:
-   Author:
-   Description:
-   Parameters:
+   Function: init
+   Author: Charles Bonn and Christian Sieh
+   Description: main initilizations for the GUI
+   Parameters: void
  ************************************************************************/
 void init(void)
 {
-    glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB );// | GLUT_DEPTH);
-    glutInitWindowPosition(50, 50);
+    glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB );
+    glutInitWindowPosition(100, 100);
     glutInitWindowSize(ScreenWidth, ScreenHeight);
     glutCreateWindow("Fractals");
-    //initRendering();
     glutDisplayFunc(display);
     glutReshapeFunc(reshape);
     glutKeyboardFunc( keyboard );
@@ -100,35 +98,43 @@ void init(void)
     glClearColor(0.0, 0.0, 0.0, 0.0);
 }
 
-void initRendering()
-{
-    glEnable(GL_DEPTH_TEST);
-}
-
  /************************************************************************
-   Function:
-   Author:
-   Description:
-   Parameters:
+   Function: display
+   Author: Charles Bonn and Christian Sieh
+   Description: main display loop for the window.  
+   Parameters: void
  ************************************************************************/
 void display(void)
 {
     glClear(GL_COLOR_BUFFER_BIT);
-    cerr << "preplot: " << points.size() << endl;
     for(unsigned int i = 0; i < points.size(); i++)
     {
         plotPoint(points[i]);
     }
-    cerr << "end plot" << endl;
     glutSwapBuffers();
     glFlush ( );
 }
 
  /************************************************************************
-   Function:
-   Author:
-   Description:
-   Parameters:
+   Function: update
+   Author: Charles Bonn 
+   Description: animation loop for the mandelbrot, calls animation in
+		color class  
+   Parameters: void
+ ************************************************************************/
+void update( int value )
+{
+    if( animation )
+    	animateColor(points);
+
+    glutPostRedisplay();
+    glutTimerFunc( animationSpeed, update, 0 );
+}
+ /************************************************************************
+   Function: reshape
+   Author: Charles Bonn and Christian Sieh
+   Description: main reshaping loop for the window.  
+   Parameters: void
  ************************************************************************/
 void reshape(GLint newWidth, GLint newHeight)
 {
@@ -144,12 +150,13 @@ void reshape(GLint newWidth, GLint newHeight)
 }
 
  /************************************************************************
-   Function:
-   Author:
-   Description:
-   Parameters:
+   Function: display
+   Author: Charles Bonn and Christian Sieh
+   Description: handles keyboard presses   
+   Parameters: unsigned char key - value of key press
+		int x - x coord on screen
+		int y - y coord on screen
  ************************************************************************/
-// callback function that tells OpenGL how to handle keystrokes
 void keyboard( unsigned char key, int x, int y )
 {
     // correct for upside-down screen coordinates
@@ -182,8 +189,18 @@ void keyboard( unsigned char key, int x, int y )
 	    swapColor(points); 
 	    glutPostRedisplay();
 	    break;
+	// key: a - animate color map
+        case 97:
+	    if( !animation )
+            	animation = true;
+	    else
+		animation = false;
+            glutPostRedisplay();
+	    break;
 	// key: r - generate random color map
 	case 114:
+	    randomColorMap(points);
+            glutPostRedisplay();
 	    break;
 	// key: h - prints debug help
 	case 104:
@@ -214,13 +231,13 @@ void keyboard( unsigned char key, int x, int y )
 }
 
  /************************************************************************
-   Function:
-   Author:
-   Description:
-   Parameters:
+   Function: special
+   Author: Charles Bonn and Christian Sieh
+   Description: handles special keypresses  
+   Parameters: int key - key press value
+		int x -
+		int y -
  ************************************************************************/
-// callback function that tells OpenGL how to handle keystrokes
-// used to move OpenGL bitmap string with arrow keys
 void special( int key, int x, int y )
 {
     // process keypresses
@@ -254,16 +271,21 @@ void special( int key, int x, int y )
     glutPostRedisplay();
 }
  /************************************************************************
-   Function:
-   Author:
-   Description:
-   Parameters:
+   Function: mouseClick
+   Author: Charles Bonn and Christian Sieh
+   Description: handles mouse clicks   
+   Parameters: int button - mouse button
+		int state - state of mouse button
+		int x - x coord of mouse click
+		int y - y coord of mouse click
  ************************************************************************/
-// callback function for mouse button click events
 void mouseclick( int button, int state, int x, int y )
 {
     // correct for upside-down screen coordinates
     y = ScreenHeight - y;
+`
+    unsigned char pick_col[3];
+    color rgb;
 
     // handle mouse click events
     switch ( button )
@@ -271,6 +293,7 @@ void mouseclick( int button, int state, int x, int y )
         case GLUT_LEFT_BUTTON:              // left button
             if ( state == GLUT_DOWN )           // press
                 cerr << "mouse click: left press at    (" << x << "," << y << ")\n";
+		
             else if ( state == GLUT_UP )        // release
                 cerr << "mouse click: left release at  (" << x << "," << y << ")\n";
             break;
@@ -282,6 +305,13 @@ void mouseclick( int button, int state, int x, int y )
                 cerr << "mouse click: right release at (" << x << "," << y << ")\n";
             break;
     }
+
+    glReadPixels(x,y,1,1,GL_RGB,GL_UNSIGNED_BYTE, pick_col);
+    rgb.r = pick_col[0]/255.0;
+    rgb.g = pick_col[1]/255.0;
+    rgb.b = pick_col[2]/255.0;
+    cerr << "R: " << rgb.r << " G: " << rgb.g << " B: " << rgb.b << endl;
+ 
 }
 
 
