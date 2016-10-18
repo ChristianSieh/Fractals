@@ -19,7 +19,7 @@ struct color
 
 struct point
 {
-    GLfloat x,y;      //point
+    GLfloat x, y;      //point
     GLfloat r, g, b;  //color value
     GLint colorSpot;
 };

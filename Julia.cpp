@@ -77,9 +77,10 @@ void solveQuadraticEq(complexNum lambda, complexNum * z)
    Description:
    Parameters:
  ************************************************************************/
-void selfSqTransf(complexNum lambda, complexNum z, GLint numPoints, vector<complexNum> &points)
+void selfSqTransf(complexNum lambda, complexNum z, GLint numPoints, vector<point> &points)
 {
     GLint k;
+    point currPoint;
 
     //  Skip the first few points.
     for(k = 0; k < 10; k++)
@@ -90,7 +91,13 @@ void selfSqTransf(complexNum lambda, complexNum z, GLint numPoints, vector<compl
     for(k = 0; k < numPoints; k++)
     {
         solveQuadraticEq(lambda, &z);
-        points.push_back(z);
+        currPoint.x = z.x;
+        currPoint.y = z.y;
+        currPoint.r = 0;
+        currPoint.g = 0;
+        currPoint.b = 1.0;
+
+        points.push_back(currPoint);
     }
 }
 
@@ -100,7 +107,7 @@ void selfSqTransf(complexNum lambda, complexNum z, GLint numPoints, vector<compl
    Description:
    Parameters:
  ************************************************************************/
-void juliaInit(vector<complexNum> &points)
+void juliaInit(vector<point> &points)
 {
     GLint numPoints = 10000; // Set number of points to be plotted.
     complexNum lambda = { 3.0, 0.0 }; // Set complex value for lambda.
@@ -108,7 +115,7 @@ void juliaInit(vector<complexNum> &points)
 
     glClear(GL_COLOR_BUFFER_BIT); // Clear display window.
 
-    points.empty();
+    points.clear();
 
     selfSqTransf(lambda, z0, numPoints, points);
 }

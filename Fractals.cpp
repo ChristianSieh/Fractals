@@ -20,7 +20,7 @@
 #include <stdlib.h>
 #include <math.h>
 #include "Mandel.h"
-//#include "Julia.h"
+#include "Julia.h"
 #include "Colors.h"
 #include "Util.h"
 
@@ -175,11 +175,12 @@ void keyboard( unsigned char key, int x, int y )
             if(juliaSet)
             {
                 mandelInit(points);
+        	    setColorMap(points);
                 juliaSet = false;
             }
             else
             {
-                //juliaInit(points);
+                juliaInit(points);
                 juliaSet = true;
             }
             glutPostRedisplay();
@@ -223,10 +224,10 @@ void keyboard( unsigned char key, int x, int y )
 	    zoomVal += 1;
 	    glutPostRedisplay();
 	    break;
-        // anything else redraws window
-        default:
-            glutPostRedisplay();
-            break;
+    // anything else redraws window
+    default:
+        glutPostRedisplay();
+        break;
     }
 }
 
