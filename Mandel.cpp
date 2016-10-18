@@ -1,14 +1,10 @@
 /************************************************************************
-  Program:
-  Author:
-  Class:
-  Instructor:
-  Date:
-  Description:    (program requirements)
-  Input:
-  Output:
-  Compilation instructions:
-  Usage:
+  Program: Fractals
+  Author: Charles Bonn and Christian Sieh
+  Class: csc433
+  Instructor: John Weiss
+  Date: 10/27/2016
+  Description:  mandelbrot functions
   Known bugs/missing features:
   Modifications:
   Date                Comment
@@ -36,7 +32,7 @@ complexNum complexSquare ( complexNum z )
 /************************************************************************
   Function: mandelSqTransf
   Author: taken from book
-  Description:
+  Description: squares complex values
   Parameters:
  complexNum z0 -
        Glint maxIter -
@@ -59,18 +55,17 @@ GLint mandelSqTransf ( complexNum z0, GLint maxIter )
 
 /************************************************************************
   Function: mandelbrot
-  Author: taken from book
-  Description:
+  Author: taken from book and modified by Charles Bonn and Christian Sieh
+  Description: calculates mandelbrot points
   Parameters:
- GLint nx -
-       Glint ny -
-       Glint maxIter
-       vector<complexNum> &points -
+ GLint nx - x points
+       Glint ny - y points 
+       Glint maxIter - number of iterations per point
+       vector<complexNum> &points - vector of points
 ************************************************************************/
 void mandelbrot ( GLint nx, GLint ny, GLint maxIter, vector<point> &points )
 {
     complexNum z, zIncr;
-    //color ptColor;
     point currPoint;
     GLint iterCount;
 
@@ -81,32 +76,28 @@ void mandelbrot ( GLint nx, GLint ny, GLint maxIter, vector<point> &points )
     {
         for ( z.y = yComplexMin; z.y < yComplexMax; z.y += zIncr.y )
         {
-	    
-	    /* Calculate point value */ 
-            iterCount = mandelSqTransf ( z, maxIter );
+	        /* Calculate point value */ 
+                iterCount = mandelSqTransf ( z, maxIter );
 
-	    /* Save point values to point */
-	    currPoint.x = z.x;
-	    currPoint.y = z.y;
+	        /* Save point values to point */
+	        currPoint.x = z.x;
+	        currPoint.y = z.y;
 	
-	    currPoint.colorSpot = iterCount;
-           
-             
-	    points.push_back ( currPoint );
+	        currPoint.colorSpot = iterCount;
+               
+	        points.push_back ( currPoint );
         }
     }
-    cerr << "end calc points: " << points.size() << endl;
 }
 
 /************************************************************************
-  Function:
-  Author:
-  Description:
-  Parameters:
+  Function: mandelInit
+  Author: takenfrom book and modified by Charles Bonn and Christian Sieh
+  Description: init for mandelbrot points
+  Parameters: vector<point> &points - vector of points
 ************************************************************************/
 void mandelInit ( vector<point> &points )
 {
-    cerr << " init mandel points" << endl;
 
     /* Set number of x and y subdivisions and the max iterations. */
     GLint nx = 1000, ny = 1000, maxIter = 1000;

@@ -15,6 +15,7 @@
 
 #include <GL/freeglut.h>
 #include <iostream>
+#include <random>
 #include <stdlib.h>
 #include <time.h>
 #include "Util.h"
