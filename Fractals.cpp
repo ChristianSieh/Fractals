@@ -283,7 +283,7 @@ void mouseclick( int button, int state, int x, int y )
 {
     // correct for upside-down screen coordinates
     y = ScreenHeight - y;
-`
+
     unsigned char pick_col[3];
     color rgb;
 
