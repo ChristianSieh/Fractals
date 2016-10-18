@@ -1,6 +1,7 @@
 #ifndef UTIL_H
 #define UTIL_H
 
+#include <cmath>
 #include <GL/freeglut.h>
 #include <iostream>
 #include <vector>
@@ -26,8 +27,8 @@ struct point
 
 static GLfloat xComplexMin = -2.00, xComplexMax = 0.50;
 static GLfloat yComplexMin = -1.25, yComplexMax = 1.25;
-static GLfloat complexWidth = xComplexMax - xComplexMin;
-static GLfloat complexHeight = yComplexMax - yComplexMin;
+static GLfloat complexWidth = fabs(xComplexMax - xComplexMin);
+static GLfloat complexHeight = fabs(yComplexMax - yComplexMin);
 
 
 void plotPoint(point z);

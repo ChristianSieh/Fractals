@@ -29,10 +29,13 @@ using namespace std;
 // Set initial size of display window
 GLsizei ScreenWidth = 600, ScreenHeight = 600;
 
-// Set coordinate limits in complex plane
-bool juliaSet = false;
+bool juliaSet = true;
 bool animation = false;
 int animationSpeed = 100;
+int mouseX = 0;
+int mouseY = 0;
+int xOffset;
+int yOffset;
 vector<point> points;
 
 // keypresses
@@ -66,8 +69,17 @@ int main(int argc, char* argv[])
     glutInit(&argc, argv);
     init();
     /* initilize points */
-    mandelInit(points);
-    setColorMap(points);
+    if(juliaSet)
+    {
+        juliaInit(points);
+        juliaSet = false;
+    }
+    else
+    {
+        mandelInit(points);
+	    setColorMap(points);
+        juliaSet = true;
+    }
     /* start timer */
     glutTimerFunc( animationSpeed, update, 0 );
     /* start main loop */
@@ -93,6 +105,7 @@ void init(void)
     glutKeyboardFunc( keyboard );
     glutSpecialFunc( special );
     glutMouseFunc( mouseclick );
+    glutMotionFunc( mousedrag );
 
     // Set color of display window to white
     glClearColor(0.0, 0.0, 0.0, 0.0);
@@ -106,11 +119,20 @@ void init(void)
  ************************************************************************/
 void display(void)
 {
+    float xScale = complexWidth / (ScreenWidth * 10);
+    float yScale = complexHeight / (ScreenHeight * 10);
+
     glClear(GL_COLOR_BUFFER_BIT);
     for(unsigned int i = 0; i < points.size(); i++)
     {
+        points[i].x += (xOffset * xScale);
+        points[i].y += (yOffset * yScale);
         plotPoint(points[i]);
     }
+
+    xOffset = 0;
+    yOffset = 0;
+
     glutSwapBuffers();
     glFlush ( );
 }
@@ -271,6 +293,7 @@ void special( int key, int x, int y )
     }
     glutPostRedisplay();
 }
+
  /************************************************************************
    Function: mouseClick
    Author: Charles Bonn and Christian Sieh
@@ -291,12 +314,19 @@ void mouseclick( int button, int state, int x, int y )
     // handle mouse click events
     switch ( button )
     {
-        case GLUT_LEFT_BUTTON:              // left button
-            if ( state == GLUT_DOWN )           // press
-                cerr << "mouse click: left press at    (" << x << "," << y << ")\n";
-		
-            else if ( state == GLUT_UP )        // release
+        case GLUT_LEFT_BUTTON:
+            if ( state == GLUT_DOWN )
+            {
+                mouseX = x;
+                mouseY = y;
+                cerr << "mouse click: left press at    (" << x << "," << y << ")\n";		    
+            }
+            else if ( state == GLUT_UP )
+            {
+                mouseX = 0;
+                mouseY = 0;
                 cerr << "mouse click: left release at  (" << x << "," << y << ")\n";
+            }
             break;
 
         case GLUT_RIGHT_BUTTON:             // right button
@@ -313,6 +343,14 @@ void mouseclick( int button, int state, int x, int y )
     rgb.b = pick_col[2]/255.0;
     cerr << "R: " << rgb.r << " G: " << rgb.g << " B: " << rgb.b << endl;
  
+}
+
+void mousedrag(int x, int y)
+{
+    y = ScreenHeight - y;
+
+    xOffset = x - mouseX;
+    yOffset = y - mouseY;
 }
 
 

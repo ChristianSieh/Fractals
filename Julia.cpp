@@ -109,7 +109,7 @@ void selfSqTransf(complexNum lambda, complexNum z, GLint numPoints, vector<point
  ************************************************************************/
 void juliaInit(vector<point> &points)
 {
-    GLint numPoints = 10000; // Set number of points to be plotted.
+    GLint numPoints = 1000; // Set number of points to be plotted.
     complexNum lambda = { 3.0, 0.0 }; // Set complex value for lambda.
     complexNum z0 = { 1.5, 0.4 }; // Set initial point in complex plane.
 
