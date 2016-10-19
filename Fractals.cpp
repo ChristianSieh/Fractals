@@ -71,7 +71,9 @@ int main(int argc, char* argv[])
     /* initilize points */
     if(juliaSet)
     {
-        juliaInit(points);
+        point initialPoint;
+        juliaInit(points, initialPoint);
+        setColorMap(points);
         juliaSet = false;
     }
     else
@@ -202,7 +204,9 @@ void keyboard( unsigned char key, int x, int y )
             }
             else
             {
-                juliaInit(points);
+                point initialPoint;
+                juliaInit(points, initialPoint);
+                setColorMap(points);
                 juliaSet = true;
             }
             glutPostRedisplay();

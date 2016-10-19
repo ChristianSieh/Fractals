@@ -98,10 +98,11 @@ void mandelbrot ( GLint nx, GLint ny, GLint maxIter, vector<point> &points )
 ************************************************************************/
 void mandelInit ( vector<point> &points )
 {
-
     /* Set number of x and y subdivisions and the max iterations. */
     GLint nx = 1000, ny = 1000, maxIter = 1000;
     glClear ( GL_COLOR_BUFFER_BIT );
+
+    cerr << "Mandel init" << endl;
 
     points.clear();
 

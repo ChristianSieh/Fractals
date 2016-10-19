@@ -39,18 +39,18 @@ void setColorMap( vector<point> &points )
     for(unsigned int i = 0; i < points.size(); i++)
     {
         if( points[i].colorSpot == 1000 )
-	{
-	    points[i].r = 0.0;
-	    points[i].g = 0.0;
-	    points[i].b = 0.0;
-	}
-	else
-	{
-	    /* set color values */
-	    points[i].r = ((float)points[i].colorSpot*ron)/rmod;
-	    points[i].g = ((float)points[i].colorSpot*gon)/gmod;
-	    points[i].b = ((float)points[i].colorSpot*bon)/bmod;
-	}
+	    {
+	        points[i].r = 0.0;
+	        points[i].g = 0.0;
+	        points[i].b = 0.0;
+	    }
+	    else
+	    {
+	        /* set color values */
+	        points[i].r = ((float)points[i].colorSpot*ron)/rmod;
+	        points[i].g = ((float)points[i].colorSpot*gon)/gmod;
+	        points[i].b = ((float)points[i].colorSpot*bon)/bmod;
+	    }
     }
 }
 
