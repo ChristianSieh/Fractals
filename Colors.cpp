@@ -32,7 +32,8 @@ static vector<color> colorMap;
 		(r,g,b)on - 1 or 0 value to use the color
                 (r,g,b)mod - color intensity
 
-   Parameters: vector<point> &points - vector of points
+   Parameters: 
+        vector<point> &points - vector of points
  ************************************************************************/ 
 void setColorMap( vector<point> &points )
 {
@@ -57,8 +58,9 @@ void setColorMap( vector<point> &points )
  /************************************************************************
    Function: randomColorMap
    Author: Charles Bonn
-   Description: generates random color values for the color set
-   Parameters: vector<point &points - vector of points 
+   Description: Generates random color values for the color set
+   Parameters: 
+        vector<point &points - vector of points 
  ************************************************************************/
 void randomColorMap( vector<point> &points )
 {
@@ -76,7 +78,7 @@ void randomColorMap( vector<point> &points )
  /************************************************************************
    Function: printColorMap
    Author: Charles Bonn
-   Description: no implimented
+   Description: not implemented
    Parameters:
  ************************************************************************/
 void printColorMap()
@@ -87,8 +89,9 @@ void printColorMap()
  /************************************************************************
    Function: swapColor
    Author: Charles Bonn
-   Description: swaps the current color pallet between preset color values
-   Parameters: vector<point> &points - vector of points
+   Description: Swaps the current color pallet between preset color values
+   Parameters: 
+        vector<point> &points - vector of points
  ************************************************************************/
 void swapColor( vector<point> &points)
 {
@@ -123,7 +126,7 @@ void swapColor( vector<point> &points)
  /************************************************************************
    Function: animateColor
    Author: Charles Bonn
-   Description: animate color takes the color pallet and shifts it to 
+   Description: Animate color takes the color pallet and shifts it to 
 		create animation effect. it replaces the current r,g,b 
 		values using the algorithm 
 			pixel = fmod( (pixel + shift) * on, 1 )
@@ -132,7 +135,8 @@ void swapColor( vector<point> &points)
 		shift - how much to shift the color value
 		on - if the color is on or off
 
-   Parameters: vector<point> &points - vector of points
+   Parameters: 
+        vector<point> &points - vector of points
  ************************************************************************/
 void animateColor( vector<point> &points )
 {

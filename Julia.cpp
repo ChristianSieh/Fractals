@@ -17,6 +17,12 @@
 
 #include "Julia.h"
 
+ /************************************************************************
+   Function: juliaComplexSquare
+   Author:
+   Description: This function squares a complex number and returns it
+   Parameters:
+ ************************************************************************/
 complexNum juliaComplexSquare ( complexNum z )
 {
     complexNum zSquare;
@@ -25,7 +31,15 @@ complexNum juliaComplexSquare ( complexNum z )
     return zSquare;
 }
 
-GLint juliaSqTransf ( complexNum z0, complexNum z, GLint maxIter )
+ /************************************************************************
+   Function: juliaSqTransf
+   Author: Christian Sieh
+   Description: This function computes z = z^2 + c repeatedly until z is
+             greater than 4 or we reach maxIter. We then return count
+             so we are able to tell how long it took z to diverge.
+   Parameters:
+ ************************************************************************/
+GLint juliaSqTransf ( complexNum c, complexNum z, GLint maxIter )
 {
     GLint count = 0;
 
@@ -33,17 +47,26 @@ GLint juliaSqTransf ( complexNum z0, complexNum z, GLint maxIter )
     while ( ( z.x * z.x + z.y * z.y <= 4.0 ) && ( count < maxIter ) )
     {
         z = juliaComplexSquare(z);
-        z.x += z0.x;
-        z.y += z0.y;
+        z.x += c.x;
+        z.y += c.y;
         count++;
     }
 
     return count;
 }
 
+ /************************************************************************
+   Function: julia
+   Author: Christian Sieh
+   Description: This function goes throught the complex name a zIncr number
+                of times in order to calulate the point for that pixel.
+                The iterCount is how long it takes for the point to diverge
+                and colorspot is used by Color.cpp to create a color map.
+   Parameters:
+ ************************************************************************/
 void julia ( GLint nx, GLint ny, GLint maxIter, vector<point> &points, point initialPoint )
 {
-    complexNum z0 = { -0.7, 0.27015 };
+    complexNum c = { -0.7, 0.27015 };
 
     complexNum z, zIncr;
     point currPoint;
@@ -57,7 +80,7 @@ void julia ( GLint nx, GLint ny, GLint maxIter, vector<point> &points, point ini
         for ( z.y = yComplexMin; z.y < yComplexMax; z.y += zIncr.y )
         {
 	        /* Calculate point value */ 
-            iterCount = juliaSqTransf ( z0, z, maxIter );
+            iterCount = juliaSqTransf ( c, z, maxIter );
 
 	        /* Save point values to point */
 	        currPoint.x = z.x;

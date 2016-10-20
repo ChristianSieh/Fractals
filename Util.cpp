@@ -17,10 +17,13 @@
 #include "Util.h"
 
  /************************************************************************
-   Function:
-   Author:
-   Description:
+   Function: plotPoint
+   Author: Charles Bonn and Christian Sieh
+   Description: This function takes a point and plots it to the screen
+                based on the point's x and y value as well as it's color
+                values.
    Parameters:
+        point z - The point that will be plotted on the screen.
  ************************************************************************/
 void plotPoint (point z)
 {
