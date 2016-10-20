@@ -73,7 +73,13 @@ int main(int argc, char* argv[])
     if(juliaSet)
     {
         point initialPoint;
-        juliaInit(points, initialPoint);
+        initialPoint.x = 100;
+        initialPoint.y = 100;
+
+        complexNum comPoint;
+        comPoint.x = (complexWidth / ScreenWidth) * initialPoint.x;
+        comPoint.y = (complexHeight / ScreenHeight) * initialPoint.y;
+        juliaInit(points, comPoint);
         setColorMap(points);
         juliaSet = false;
     }
@@ -219,15 +225,24 @@ void keyboard( unsigned char key, int x, int y )
         case 106: 
             if(juliaSet)
             {
-                mandelInit(points);
-        	    setColorMap(points);
+                complexNum comPoint;
+                int xOrigin = ScreenWidth / 2;
+                int yOrigin = ScreenHeight / 2;
+
+                x = x - xOrigin;
+                y = y - yOrigin;
+
+                comPoint.x = (complexWidth / ScreenWidth) * x;
+                comPoint.y = (complexHeight / ScreenHeight) * y;
+
+                juliaInit(points, comPoint);
+                setColorMap(points);
                 juliaSet = false;
             }
             else
             {
-                point initialPoint;
-                juliaInit(points, initialPoint);
-                setColorMap(points);
+                mandelInit(points);
+        	    setColorMap(points);
                 juliaSet = true;
             }
             glutPostRedisplay();
