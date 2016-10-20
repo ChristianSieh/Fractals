@@ -62,7 +62,7 @@ void setColorMap( vector<point> &points )
    Parameters: 
         vector<point &points - vector of points 
  ************************************************************************/
-void randomColorMap( vector<point> &points )
+void randomColorMap( vector<point> &points)
 {
     srand(time(NULL));
     rmod = rand() % 30 + 1;
