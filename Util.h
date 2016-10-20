@@ -24,7 +24,7 @@ struct point
     GLint colorSpot;
 };
 
-static GLfloat xComplexMin = -2.00, xComplexMax = 0.50;
+static GLfloat xComplexMin = -2.00, xComplexMax = .50;
 static GLfloat yComplexMin = -1.25, yComplexMax = 1.25;
 static GLfloat complexWidth = xComplexMax - xComplexMin;
 static GLfloat complexHeight = yComplexMax - yComplexMin;

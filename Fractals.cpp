@@ -107,10 +107,22 @@ void init(void)
 void display(void)
 {
     glClear(GL_COLOR_BUFFER_BIT);
+ 
+
     for(unsigned int i = 0; i < points.size(); i++)
     {
         plotPoint(points[i]);
     }
+
+    glPushMatrix();
+  
+    glLoadIdentity();
+    glColor3f( 1.0, 1.0, 1.0 );
+    //glTranslatef( 50, 50, 0);
+    glRecti( ScreenWidth -1000 , ScreenHeight - 100, ScreenWidth,ScreenHeight );
+    //glPushMatrix(); 
+    //glPopMatrix();
+    glPopMatrix();
     glutSwapBuffers();
     glFlush ( );
 }

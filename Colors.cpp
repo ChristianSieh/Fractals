@@ -137,7 +137,7 @@ void swapColor( vector<point> &points)
 void animateColor( vector<point> &points )
 {
     /* value to shift pixel color */
-    double shift = .05;
+    double shift = .05; 
 
     for(unsigned int i = 0; i < points.size(); i++)
     {
