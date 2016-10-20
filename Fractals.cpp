@@ -29,10 +29,13 @@ using namespace std;
 // Set initial size of display window
 GLsizei ScreenWidth = 600, ScreenHeight = 600;
 
-// Set coordinate limits in complex plane
-bool juliaSet = false;
+bool juliaSet = true;
 bool animation = false;
 int animationSpeed = 100;
+int mouseX = 0;
+int mouseY = 0;
+int xOffset;
+int yOffset;
 vector<point> points;
 
 // keypresses
@@ -55,9 +58,10 @@ void mousedrag( int x, int y );
  /************************************************************************
    Function: main
    Author: Charles Bonn and Christian Sieh
-   Description: main function of the program. makes initilization calls
-		and starts the main glut loop
-   Parameters: int argc - number of arguments
+   Description: The main function of the program which makes initilization 
+                calls and starts the main glut loop
+   Parameters: 
+           int argc - number of arguments
 	       char* argv[] - argument values
  ************************************************************************/
 int main(int argc, char* argv[])
@@ -66,8 +70,19 @@ int main(int argc, char* argv[])
     glutInit(&argc, argv);
     init();
     /* initilize points */
-    mandelInit(points);
-    setColorMap(points);
+    if(juliaSet)
+    {
+        point initialPoint;
+        juliaInit(points, initialPoint);
+        setColorMap(points);
+        juliaSet = false;
+    }
+    else
+    {
+        mandelInit(points);
+	    setColorMap(points);
+        juliaSet = true;
+    }
     /* start timer */
     glutTimerFunc( animationSpeed, update, 0 );
     /* start main loop */
@@ -79,7 +94,7 @@ int main(int argc, char* argv[])
  /************************************************************************
    Function: init
    Author: Charles Bonn and Christian Sieh
-   Description: main initilizations for the GUI
+   Description: The main initilizations for GLUT
    Parameters: void
  ************************************************************************/
 void init(void)
@@ -93,6 +108,7 @@ void init(void)
     glutKeyboardFunc( keyboard );
     glutSpecialFunc( special );
     glutMouseFunc( mouseclick );
+    glutMotionFunc( mousedrag );
 
     // Set color of display window to white
     glClearColor(0.0, 0.0, 0.0, 0.0);
@@ -101,16 +117,22 @@ void init(void)
  /************************************************************************
    Function: display
    Author: Charles Bonn and Christian Sieh
-   Description: main display loop for the window.  
+   Description: The main display function for the program that draws the
+                fractal to the screen using the points vector. 
    Parameters: void
  ************************************************************************/
 void display(void)
 {
+    float xScale = complexWidth / (ScreenWidth * 10);
+    float yScale = complexHeight / (ScreenHeight * 10);
+
     glClear(GL_COLOR_BUFFER_BIT);
  
 
     for(unsigned int i = 0; i < points.size(); i++)
     {
+        points[i].x += (xOffset * xScale);
+        points[i].y += (yOffset * yScale);
         plotPoint(points[i]);
     }
 
@@ -123,6 +145,9 @@ void display(void)
     //glPushMatrix(); 
     //glPopMatrix();
     glPopMatrix();
+    xOffset = 0;
+    yOffset = 0;
+
     glutSwapBuffers();
     glFlush ( );
 }
@@ -130,9 +155,10 @@ void display(void)
  /************************************************************************
    Function: update
    Author: Charles Bonn 
-   Description: animation loop for the mandelbrot, calls animation in
+   Description: The animation loop for the mandelbrot, calls animation in
 		color class  
-   Parameters: void
+   Parameters:
+        int value - 
  ************************************************************************/
 void update( int value )
 {
@@ -145,8 +171,10 @@ void update( int value )
  /************************************************************************
    Function: reshape
    Author: Charles Bonn and Christian Sieh
-   Description: main reshaping loop for the window.  
-   Parameters: void
+   Description: The GLUT function that handles when the window is resized.  
+   Parameters:
+        GLint newWidth - The width value after the window has been resized
+		GLint newHeight - The height value after the window has been resized.
  ************************************************************************/
 void reshape(GLint newWidth, GLint newHeight)
 {
@@ -164,10 +192,14 @@ void reshape(GLint newWidth, GLint newHeight)
  /************************************************************************
    Function: display
    Author: Charles Bonn and Christian Sieh
-   Description: handles keyboard presses   
-   Parameters: unsigned char key - value of key press
-		int x - x coord on screen
-		int y - y coord on screen
+   Description: This function handles all the key presses that are not
+                GLUT special key presses. 
+   Parameters: 
+        unsigned char key - The value of the key that is pressed.
+		int x - The x coordinate for where the mouse is when the key is
+                pressed.
+		int y - The y coordinate for where the mouse is when the key is
+                pressed.
  ************************************************************************/
 void keyboard( unsigned char key, int x, int y )
 {
@@ -182,7 +214,8 @@ void keyboard( unsigned char key, int x, int y )
         case EscapeKey:
             exit( 0 );
             break;
-	// key: j - switches between julia and mandelbrot sets
+
+	    // key: j - switches between julia and mandelbrot sets
         case 106: 
             if(juliaSet)
             {
@@ -192,64 +225,77 @@ void keyboard( unsigned char key, int x, int y )
             }
             else
             {
-                juliaInit(points);
+                point initialPoint;
+                juliaInit(points, initialPoint);
+                setColorMap(points);
                 juliaSet = true;
             }
             glutPostRedisplay();
             break;
-	// key: c - change color map
-	case 99:
-	    swapColor(points); 
-	    glutPostRedisplay();
-	    break;
-	// key: a - animate color map
-        case 97:
-	    if( !animation )
-            	animation = true;
-	    else
-		animation = false;
+
+	    // key: c - change color map
+	    case 99:
+	        swapColor(points); 
+	        glutPostRedisplay();
+	        break;
+
+	    // key: a - animate color map
+            case 97:
+	        if( !animation )
+                	animation = true;
+	        else
+		    animation = false;
+                glutPostRedisplay();
+	        break;
+
+	    // key: r - generate random color map
+	    case 114:
+	        randomColorMap(points);
+                glutPostRedisplay();
+	        break;
+
+	    // key: h - prints debug help
+	    case 104:
+	        cerr << "size of points: " << points.size() << "\n";
+	        cerr << "zoomVal: " << zoomVal << endl;
+	        //printColorMap();
+	        break;
+
+	    // key: - - zoom out
+	    case 45:
+	        if( zoomVal > 0 )
+	        {
+	            zoomVal -= 1;
+                }
+	        glutPostRedisplay();
+	        break;
+
+	    // key: = - alt for + on laptops
+	    case 61:
+
+	    // key: + - zoom in
+	    case 43:
+	        zoomVal += 1;
+	        glutPostRedisplay();
+	        break;
+
+        // anything else redraws window
+        default:
             glutPostRedisplay();
-	    break;
-	// key: r - generate random color map
-	case 114:
-	    randomColorMap(points);
-            glutPostRedisplay();
-	    break;
-	// key: h - prints debug help
-	case 104:
-	    cerr << "size of points: " << points.size() << "\n";
-	    cerr << "zoomVal: " << zoomVal << endl;
-	    //printColorMap();
-	    break;
-	// key: - - zoom out
-	case 45:
-	    if( zoomVal > 0 )
-	    {
-	        zoomVal -= 1;
-            }
-	    glutPostRedisplay();
-	    break;
-	// key: = - alt for + on laptops
-	case 61:
-	// key: + - zoom in
-	case 43:
-	    zoomVal += 1;
-	    glutPostRedisplay();
-	    break;
-    // anything else redraws window
-    default:
-        glutPostRedisplay();
-        break;
+            break;
     }
 }
 
  /************************************************************************
    Function: special
    Author: Charles Bonn and Christian Sieh
-   Description: handles special keypresses  
-   Parameters: int key - key press value
-		int x -
-		int y -
+   Description: This function handles special GLUT keypresses, but we
+                are only using it for the up, down, left, and right arrow
+                keys. This is used to handle panning around the scene. 
+   Parameters: 
+        int key - The key value that was pressed
+		int x - The x coordinate for the mouse when the key is pressed
+		int y - The y coordinate for the mouse when the key is pressed
  ************************************************************************/
 void special( int key, int x, int y )
 {
@@ -283,14 +329,16 @@ void special( int key, int x, int y )
     }
     glutPostRedisplay();
 }
+
  /************************************************************************
-   Function: mouseClick
+   Function: mouseclick
    Author: Charles Bonn and Christian Sieh
    Description: handles mouse clicks   
-   Parameters: int button - mouse button
-		int state - state of mouse button
-		int x - x coord of mouse click
-		int y - y coord of mouse click
+   Parameters: 
+        int button - Which mouse button was pressed
+		int state - The state of mouse button
+		int x - The x coordinate of where the mouse was clicked
+		int y - The y coordinate of where the mouse was clicked
  ************************************************************************/
 void mouseclick( int button, int state, int x, int y )
 {
@@ -303,12 +351,19 @@ void mouseclick( int button, int state, int x, int y )
     // handle mouse click events
     switch ( button )
     {
-        case GLUT_LEFT_BUTTON:              // left button
-            if ( state == GLUT_DOWN )           // press
-                cerr << "mouse click: left press at    (" << x << "," << y << ")\n";
-		
-            else if ( state == GLUT_UP )        // release
+        case GLUT_LEFT_BUTTON:
+            if ( state == GLUT_DOWN )
+            {
+                mouseX = x;
+                mouseY = y;
+                cerr << "mouse click: left press at    (" << x << "," << y << ")\n";		    
+            }
+            else if ( state == GLUT_UP )
+            {
+                mouseX = 0;
+                mouseY = 0;
                 cerr << "mouse click: left release at  (" << x << "," << y << ")\n";
+            }
             break;
 
         case GLUT_RIGHT_BUTTON:             // right button
@@ -325,6 +380,23 @@ void mouseclick( int button, int state, int x, int y )
     rgb.b = pick_col[2]/255.0;
     cerr << "R: " << rgb.r << " G: " << rgb.g << " B: " << rgb.b << endl;
  
+}
+
+ /************************************************************************
+   Function: mousedrag
+   Author: Christian Sieh
+   Description: GLUT motionfunc that handles when the mouse is clicked and 
+                dragged across the screen to get the mouse position.
+   Parameters: 
+		int x - The x coordinate of where the mouse is currently
+		int y - The y coordinate of where the mouse is currently
+ ************************************************************************/
+void mousedrag(int x, int y)
+{
+    y = ScreenHeight - y;
+
+    xOffset = x - mouseX;
+    yOffset = y - mouseY;
 }
 
 

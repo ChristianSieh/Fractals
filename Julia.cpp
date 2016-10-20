@@ -18,86 +18,78 @@
 #include "Julia.h"
 
  /************************************************************************
-   Function:
+   Function: juliaComplexSquare
    Author:
-   Description:
+   Description: This function squares a complex number and returns it
    Parameters:
  ************************************************************************/
-
-void solveQuadraticEq(complexNum lambda, complexNum * z)
+complexNum juliaComplexSquare ( complexNum z )
 {
-    GLfloat lambdaMagSq, discrMag;
-    complexNum discr;
-    static complexNum fourOverLambda = {0.0, 0.0};
-    static GLboolean firstPoint = true;
-
-    if(firstPoint)
-    {
-        // Compute the complex number: 4.0 divided by  lambda.
-        lambdaMagSq = lambda.x * lambda.x + lambda.y * lambda.y;
-        fourOverLambda.x = 4.0 * lambda.x / lambdaMagSq;
-        fourOverLambda.y = -4.0 * lambda.y / lambdaMagSq;
-        firstPoint = false;
-    }
-
-    discr.x = 1.0 - (z->x * fourOverLambda.x - z->y * fourOverLambda.y);
-    discr.y = z->x * fourOverLambda.y + z->y * fourOverLambda.x;
-    discrMag = sqrt(discr.x * discr.x + discr.y * discr.y);
-
-    // Update z, checking to avoid the square root of a negative number
-    if(discrMag + discr.x < 0)
-        z->x = 0;
-    else
-        z->x = sqrt ((discrMag + discr.x) / 2.0);
-
-    if(discrMag - discr.x < 0)
-        z->y = 0;
-    else
-        z->y = 0.5 * sqrt ((discrMag - discr.x) / 2.0);
-
-    // For half the points use negative root, placing point in quadrant 3.
-    if(rand() < RAND_MAX / 2)
-    {
-        z->x = -z->x;
-        z->y = -z->y;
-    }
-
-    // When imaginary part of discriminant is negative, point
-    // should lie in quadrant 2 or 4, so reverse sign of x.
-    if(discr.y < 0)
-        z->x = -z->x;
-
-    //  Complete the calculation for the real part of z.
-    z->x = 0.5 * (1 - z->x);   
+    complexNum zSquare;
+    zSquare.x = z.x * z.x - z.y * z.y;
+    zSquare.y = 2 * z.x * z.y;
+    return zSquare;
 }
 
  /************************************************************************
-   Function:
-   Author:
-   Description:
+   Function: juliaSqTransf
+   Author: Christian Sieh
+   Description: This function computes z = z^2 + c repeatedly until z is
+             greater than 4 or we reach maxIter. We then return count
+             so we are able to tell how long it took z to diverge.
    Parameters:
  ************************************************************************/
-void selfSqTransf(complexNum lambda, complexNum z, GLint numPoints, vector<point> &points)
+GLint juliaSqTransf ( complexNum c, complexNum z, GLint maxIter )
 {
-    GLint k;
+    GLint count = 0;
+
+    /* Quit when z * z > 4 */
+    while ( ( z.x * z.x + z.y * z.y <= 4.0 ) && ( count < maxIter ) )
+    {
+        z = juliaComplexSquare(z);
+        z.x += c.x;
+        z.y += c.y;
+        count++;
+    }
+
+    return count;
+}
+
+ /************************************************************************
+   Function: julia
+   Author: Christian Sieh
+   Description: This function goes throught the complex name a zIncr number
+                of times in order to calulate the point for that pixel.
+                The iterCount is how long it takes for the point to diverge
+                and colorspot is used by Color.cpp to create a color map.
+   Parameters:
+ ************************************************************************/
+void julia ( GLint nx, GLint ny, GLint maxIter, vector<point> &points, point initialPoint )
+{
+    complexNum c = { -0.7, 0.27015 };
+
+    complexNum z, zIncr;
     point currPoint;
+    GLint iterCount;
 
-    //  Skip the first few points.
-    for(k = 0; k < 10; k++)
-    {        
-        solveQuadraticEq(lambda, &z);
-    }
-    //  Plot the specified number of transformation points.
-    for(k = 0; k < numPoints; k++)
+    zIncr.x = complexWidth / GLfloat ( nx );
+    zIncr.y = complexHeight / GLfloat ( ny );
+
+    for ( z.x = xComplexMin; z.x < xComplexMax; z.x += zIncr.x )
     {
-        solveQuadraticEq(lambda, &z);
-        currPoint.x = z.x;
-        currPoint.y = z.y;
-        currPoint.r = 0;
-        currPoint.g = 0;
-        currPoint.b = 1.0;
+        for ( z.y = yComplexMin; z.y < yComplexMax; z.y += zIncr.y )
+        {
+	        /* Calculate point value */ 
+            iterCount = juliaSqTransf ( c, z, maxIter );
 
-        points.push_back(currPoint);
+	        /* Save point values to point */
+	        currPoint.x = z.x;
+	        currPoint.y = z.y;
+	
+	        currPoint.colorSpot = iterCount;
+
+	        points.push_back ( currPoint );
+        }
     }
 }
 
@@ -107,15 +99,13 @@ void selfSqTransf(complexNum lambda, complexNum z, GLint numPoints, vector<point
    Description:
    Parameters:
  ************************************************************************/
-void juliaInit(vector<point> &points)
+void juliaInit(vector<point> &points, point initialPoint)
 {
-    GLint numPoints = 10000; // Set number of points to be plotted.
-    complexNum lambda = { 3.0, 0.0 }; // Set complex value for lambda.
-    complexNum z0 = { 1.5, 0.4 }; // Set initial point in complex plane.
-
+    /* Set number of x and y subdivisions and the max iterations. */
+    GLint nx = 1000, ny = 1000, maxIter = 1000;
     glClear(GL_COLOR_BUFFER_BIT); // Clear display window.
 
     points.clear();
 
-    selfSqTransf(lambda, z0, numPoints, points);
+    julia(nx, ny, maxIter, points, initialPoint);
 }

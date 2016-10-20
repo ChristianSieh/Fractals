@@ -9,8 +9,9 @@
 
 using namespace std;
 
-void solveQuadraticEq(complexNum lambda, complexNum * z);
-void selfSqTransf(complexNum lambda, complexNum z, GLint numPoints, vector<point> &points);
-void juliaInit(vector<point> &points);
+complexNum juliaComplexSquare ( complexNum z );
+GLint juliaSqTransf ( complexNum z0, complexNum z, GLint maxIter );
+void julia ( GLint nx, GLint ny, GLint maxIter, vector<point> &points, point initialPoint );
+void juliaInit(vector<point> &points, point initialPoint);
 
 #endif
