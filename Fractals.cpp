@@ -251,7 +251,7 @@ void keyboard( unsigned char key, int x, int y )
             }
             else
             {
-                mandelInit(points);
+                mandelInit(points, view);
         	    setColorMap(points);
                 juliaSet = true;
             }
@@ -366,22 +366,18 @@ void special( int key, int x, int y )
    Parameters: 
         int button - Which mouse button was pressed
 		int state - The state of mouse button
-		int x - The x coordinate of where the mouse was clicked
-		int y - The y coordinate of where the mouse was clicked
- ************************************************************************/
-void mouseclick( int button, int state, int x, int y )
+  ************************************************************************/
+          
+void mouseclick(int button, int state, int x, int y)
 {
-    // correct for upside-down screen coordinates
     y = ScreenHeight - y;
 
     unsigned char pick_col[3];
     color rgb;
 
-    // handle mouse click events
-    switch ( button )
-    {
-        case GLUT_LEFT_BUTTON:
-            if ( state == GLUT_DOWN )
+	switch( button )
+     {
+	     if ( state == GLUT_DOWN )
             {
                 mouseX = x;
                 mouseY = y;
