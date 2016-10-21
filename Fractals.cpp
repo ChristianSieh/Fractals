@@ -68,10 +68,19 @@ void mousedrag( int x, int y );
  ************************************************************************/
 int main(int argc, char* argv[])
 {
+    /*xComplexMin = -5.00;
+    xComplexMax = 5.00;
+    yComplexMin = -5.00;
+    yComplexMax = 5.00;
+    complexWidth = fabs(xComplexMax - xComplexMin );
+    complexHeight = fabs(yComplexMax - xComplexMin ); */
+
     /* main initilizations */
     glutInit(&argc, argv);
     init();
-    
+   
+    /* initilzie view */
+    changeView(view); 
     /* initilize points */
     if(juliaSet)
     {
@@ -88,8 +97,8 @@ int main(int argc, char* argv[])
     }
     else
     {
-        mandelInit(points, view);
-	    setColorMap(points);
+        mandelInit(points);
+	setColorMap(points);
         juliaSet = true;
     }
     /* start timer */
@@ -139,7 +148,9 @@ void display(void)
 
     if(view.change)
     {
-        mandelInit(points, view);
+        cerr << " changed " << endl;
+        changeView(view);
+        mandelInit(points);
 	setColorMap(points);
         view.change = false;
     } 
@@ -201,7 +212,7 @@ void reshape(GLint newWidth, GLint newHeight)
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
 
-    gluOrtho2D(xComplexMin/view.z, xComplexMax/view.z, yComplexMin/view.z, yComplexMax/view.z);
+    gluOrtho2D(xComplexMin, xComplexMax, yComplexMin, yComplexMax);
     glClear(GL_COLOR_BUFFER_BIT);
 }
 
@@ -251,7 +262,7 @@ void keyboard( unsigned char key, int x, int y )
             }
             else
             {
-                mandelInit(points, view);
+                mandelInit(points);
         	    setColorMap(points);
                 juliaSet = true;
             }
@@ -290,10 +301,10 @@ void keyboard( unsigned char key, int x, int y )
 	    case 45:
 	        if( view.z > 1 )
 	        {
-	            view.z /= pow(1.01, view.z);
+	            view.z -= .02;
+		    view.change = true;
                 }
 		cerr << "zoom: " << view.z << endl;
-		view.change = true;
 	        glutPostRedisplay();
 	        break;
 
@@ -302,9 +313,12 @@ void keyboard( unsigned char key, int x, int y )
 
 	    // key: + - zoom in
 	    case 43:
-	        view.z *= pow(1.01, view.z) ;
-                cerr << "zoom: " << view.z << endl;
-	        view.change = true;
+		if( view.z < 21556.6 )
+		{
+	            view.z += .02 ;
+                    cerr << "zoom: " << view.z << endl;
+	            view.change = true;
+                }
 	        glutPostRedisplay();
 	        break;
 
@@ -334,25 +348,33 @@ void special( int key, int x, int y )
         case GLUT_KEY_LEFT:
             for(unsigned int i = 0; i < points.size(); i++)
             {
-                points[i].x -= .1;
+                //points[i].x -= .1;
+                view.x -= .01;
+		view.change = true;
             }
             break;
         case GLUT_KEY_RIGHT:;
             for(unsigned int i = 0; i < points.size(); i++)
             {
-                points[i].x += .1;
+                //points[i].x += .1;
+                view.x += .01;
+		view.change = true;
             }
             break;
         case GLUT_KEY_UP:
             for(unsigned int i = 0; i < points.size(); i++)
             {
-                points[i].y += .1;
+                //points[i].y += .1;
+                view.y += .01;
+                view.change = true;
             }
             break;
         case GLUT_KEY_DOWN:
             for(unsigned int i = 0; i < points.size(); i++)
             {
-                points[i].y -= .1;
+                //points[i].y -= .1;
+                view.y -= .01;
+                view.change = true;
             }
             break;
     }

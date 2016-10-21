@@ -65,22 +65,37 @@ GLint mandelSqTransf ( complexNum z0, GLint maxIter )
        Glint maxIter - number of iterations per point
        vector<complexNum> &points - vector of points
 ************************************************************************/
-void mandelbrot ( GLint nx, GLint ny, vector<point> &points, viewMod view )
+void mandelbrot ( GLint nx, GLint ny, vector<point> &points)
 {
     complexNum z, zIncr;
     point currPoint;
     GLint iterCount;
 
-
+    /* get size values */
+    GLfloat xMin = getXMin();
+    GLfloat xMax = getXMax();
+    GLfloat yMin = getYMin();
+    GLfloat yMax = getYMax();
+    GLfloat cWidth = getWidth();
+    GLfloat cHeight = getHeight();
+  
+    cerr << "inside " << endl;
+    cerr << "xmin: " << xMin << endl;
+    cerr << "xmax: " << xMax << endl;
+    cerr << "ymin: " << yMin << endl;
+    cerr << "ymax: " << yMax << endl;
+    cerr << "cWidth: " << cWidth << endl;
+    cerr << "cheight: " << cHeight << endl;
+    
     /* initialize complex values */
-    zIncr.x = complexWidth / ( GLfloat ( nx ) );
-    zIncr.y = complexHeight / ( GLfloat ( ny ) );
+    zIncr.x = cWidth / ( GLfloat ( nx ) );
+    zIncr.y = cHeight / ( GLfloat ( ny ) );
 	
     /* go though x values */
-    for ( z.x = (xComplexMin / view.z); z.x < (xComplexMax / view.z); z.x += zIncr.x )
+    for ( z.x = xMin; z.x < xMax; z.x += zIncr.x )
     {
 	/* go though y values */
-        for ( z.y = (yComplexMin / view.z); z.y < (yComplexMax / view.z); z.y += zIncr.y )
+        for ( z.y = yMin; z.y < yMax; z.y += zIncr.y )
         {
 	        /* Calculate point value */ 
             iterCount = mandelSqTransf ( z, maxIter );
@@ -102,18 +117,16 @@ void mandelbrot ( GLint nx, GLint ny, vector<point> &points, viewMod view )
   Description: init for mandelbrot points
   Parameters: vector<point> &points - vector of points
 ************************************************************************/
-void mandelInit ( vector<point> &points, viewMod view )
+void mandelInit ( vector<point> &points )
 {
     /* Set number of x and y subdivisions and the max iterations. */
     GLint nx = 1000, ny = 1000;//, maxIter = 1500;
     glClear ( GL_COLOR_BUFFER_BIT );
 
-    cerr << "Mandel init" << endl;
 
     points.clear();
 
     /* Clear display window. */
-    //mandelbrot ( nx, ny, maxIter, points );
-    mandelbrot( nx, ny, points, view);
+    mandelbrot( nx, ny, points);
 }
 

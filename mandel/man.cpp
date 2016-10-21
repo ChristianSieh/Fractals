@@ -6,8 +6,8 @@ using namespace std;
 GLsizei winWidth = 500, winHeight = 500;
 
 /* Set limits for the rectangular area in complex plane. */
-GLfloat xComplexMin = -2.00, xComplexMax = 0.50;
-GLfloat yComplexMin = -1.25, yComplexMax = 1.25;
+GLfloat xComplexMin = -2.00/3, xComplexMax = 0.50/3;
+GLfloat yComplexMin = -1.25/3, yComplexMax = 1.25/3;
 GLfloat complexWidth = xComplexMax - xComplexMin;
 GLfloat complexHeight = yComplexMax - yComplexMin;
 

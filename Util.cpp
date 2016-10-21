@@ -16,6 +16,8 @@
  ************************************************************************/
 #include "Util.h"
 
+static const GLfloat xxComplexMin = -5.00, xxComplexMax = 5.00;
+static const GLfloat yyComplexMin = -5.00, yyComplexMax = 5.00;
  /************************************************************************
    Function: plotPoint
    Author: Charles Bonn and Christian Sieh
@@ -44,4 +46,52 @@ void printPoint (point z)
     cerr << "R: " << z.r << endl;
     cerr << "G: " << z.g << endl;
     cerr << "B: " << z.b << endl;
+}
+
+void changeView(viewMod view)
+{
+    cerr << "view.z: " << view.z << endl; 
+    xComplexMin = (xxComplexMin / view.z) + view.x;
+    xComplexMax = (xxComplexMax / view.z) + view.x;
+    yComplexMin = (yyComplexMin / view.z) + view.y;
+    yComplexMax = (yyComplexMax / view.z) + view.y;
+
+    complexWidth = fabs(xComplexMax - xComplexMin);
+    complexHeight = fabs(yComplexMax - yComplexMin); 
+    cerr << "xmin: " << xComplexMin << endl;
+    cerr << "xmax: " << xComplexMax << endl;
+    cerr << "ymin: " << yComplexMin << endl;
+    cerr << "ymax: " << yComplexMax << endl;
+    cerr << "Width: " << complexWidth << endl;
+    cerr << "Height: " << complexHeight << endl;
+}
+
+float getXMin()
+{
+    return xComplexMin;
+}
+
+float getXMax()
+{
+    return xComplexMax;
+}
+
+float getYMin()
+{
+    return yComplexMin;
+}
+
+float getYMax()
+{
+    return yComplexMax;
+}
+
+float getWidth()
+{
+    return complexHeight;
+}
+
+float getHeight()
+{
+    return complexHeight;
 }

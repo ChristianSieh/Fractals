@@ -29,21 +29,28 @@ struct point
 struct viewMod
 {
     GLfloat z = 1;
-    GLfloat x ,y;
+    GLfloat x = 0 ,y = 0;
     bool change = false;
 };
 
-static GLfloat xComplexMin = -5.00, xComplexMax = 5.00;
-static GLfloat yComplexMin = -5.00, yComplexMax = 5.00;
+//static GLfloat xComplexMin = -5.00, xComplexMax = 5.00;
+//static GLfloat yComplexMin = -5.00, yComplexMax = 5.00;
 
-//static GLfloat xComplexMin = -2.00, xComplexMax = 1.00;
-//static GLfloat yComplexMin = -1.25, yComplexMax = 1.25;
+static GLfloat xComplexMin, xComplexMax;
+static GLfloat yComplexMin, yComplexMax;
 //static GLfloat xComplexMin = -1.00, xComplexMax = .20;
 //static GLfloat yComplexMin = -.75, yComplexMax = .75;
-static GLfloat complexWidth = fabs(xComplexMax - xComplexMin);
-static GLfloat complexHeight = fabs(yComplexMax - yComplexMin);
+static GLfloat complexWidth;// = fabs(xComplexMax - xComplexMin);
+static GLfloat complexHeight;// = fabs(yComplexMax - yComplexMin);
 
 
 void plotPoint(point z);
 void printPoint(point z);
+void changeView(viewMod view);
+float getXMin();
+float getXMax();
+float getYMin();
+float getYMax();
+float getWidth();
+float getHeight();
 #endif
