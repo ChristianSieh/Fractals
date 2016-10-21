@@ -25,7 +25,7 @@ using namespace std;
  /*********************** function prototypes ***************************/
 complexNum complexSquare(complexNum z);
 GLint mandelSqTransf(complexNum z0, GLint maxIter);
-void mandelbrot(GLint nx, GLint ny, vector<point> &points);
-void mandelInit(vector<point> &points, viewMod &view);
+void mandelbrot(GLint nx, GLint ny, vector<point> &points, viewMod view);
+void mandelInit(vector<point> &points, viewMod view);
 
 #endif

@@ -27,8 +27,9 @@ struct point
 
 struct viewMod
 {
-    GLint zoom;
+    GLfloat z = 1;
     GLfloat x ,y;
+    bool change = false;
 };
 
 static GLfloat xComplexMin = -2.00, xComplexMax = 1.00;
