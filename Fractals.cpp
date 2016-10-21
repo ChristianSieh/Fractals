@@ -359,9 +359,9 @@ void keyboard( unsigned char key, int x, int y )
 	        if( view.z > 1 )
 	        {
 	            view.z -= .02;
-		    view.change = true;
-                }
-		cerr << "zoom: " << view.z << endl;
+		        view.change = true;
+            }
+	        cerr << "zoom: " << view.z << endl;
 	        glutPostRedisplay();
 	        break;
 
@@ -370,12 +370,12 @@ void keyboard( unsigned char key, int x, int y )
 
 	    // key: + - zoom in
 	    case 43:
-		if( view.z < 21556.6 )
-		{
+		    if( view.z < 21556.6 )
+		    {
 	            view.z += .02 ;
                     cerr << "zoom: " << view.z << endl;
 	            view.change = true;
-                }
+            }
 	        glutPostRedisplay();
 	        break;
 
@@ -452,20 +452,41 @@ void mouseclick(int button, int state, int x, int y)
 
 	switch( button )
      {
-        // Store  mouseX and mouseY in case of click and drag
-	    if ( state == GLUT_DOWN )
-        {
-            mouseX = x;
-            mouseY = y;
-            cerr << "mouse click: left press at    (" << x << "," << y << ")\n";		    
-        }
-        else if ( state == GLUT_UP )
-        {
-            mouseX = 0;
-            mouseY = 0;
-            cerr << "mouse click: left release at  (" << x << "," << y << ")\n";
-        }
-        break;
+        // Zoom in
+        case 3:
+		    if( view.z < 21556.6 )
+		    {
+	            view.z += .02 ;
+                    cerr << "zoom: " << view.z << endl;
+	            view.change = true;
+            }
+            break;
+
+        // Zoom Out
+        case 4:
+	        if( view.z > 1 )
+	        {
+	            view.z -= .02;
+		        view.change = true;
+            }
+            break;
+
+        // Left mouse click
+        case GLUT_LEFT_BUTTON:
+            // Store  mouseX and mouseY in case of click and drag
+	        if ( state == GLUT_DOWN )
+            {
+                mouseX = x;
+                mouseY = y;
+                cerr << "mouse click: left press at    (" << x << "," << y << ")\n";		    
+            }
+            else if ( state == GLUT_UP )
+            {
+                mouseX = 0;
+                mouseY = 0;
+                cerr << "mouse click: left release at  (" << x << "," << y << ")\n";
+            }
+            break;
     }
 }
 
@@ -485,7 +506,3 @@ void mousedrag(int x, int y)
     xOffset = x - mouseX;
     yOffset = y - mouseY;
 }
-
-
-
-
