@@ -10,12 +10,14 @@
 # GNU C/C++ compiler and linker:
 CC = gcc
 CXX = g++
-LINK = g++
+LINK = nvcc
+CU = nvcc
 
 # Turn on optimization and warnings (add -g for debugging with gdb):
 # CPPFLAGS = 		# preprocessor flags
 CFLAGS = -O -Wall
 CXXFLAGS = -O -Wall -std=c++11
+NVCCFlAGS = -O -std=c++11
 
 # OpenGL/Mesa libraries for Linux:
 GL_LIBS = -lglut -lGLU -lGL -lm
@@ -37,7 +39,10 @@ all:    Fractals
 
 # specific targets
 Fractals:	Fractals.o Julia.o Mandel.o Util.o Colors.o
-	$(LINK) -o $@ $^ $(GL_LIBS)
+	$(LINK) -o $@ $^ $(GL_LIBS) $(NVCCFLAGS)
+
+Mandel.o:
+	nvcc -c Mandel.cu
 
 # generic C and C++ targets for OpenGL programs consisting of only one file
 # type "make filename" (no extension) to build
@@ -46,6 +51,9 @@ Fractals:	Fractals.o Julia.o Mandel.o Util.o Colors.o
 
 .cpp:
 	$(CXX) -o $@ $@.cpp $(CXXFLAGS) $(GL_LIBS)
+
+.cu:
+	$(CU) -o $@ $@.cu $(CXXFLAGS) $(GL_LIBS)
 
 # utility targets
 clean:
