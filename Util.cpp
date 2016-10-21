@@ -1,18 +1,13 @@
  /************************************************************************
-   Program: 
-   Author: 
-   Class:
-   Instructor:
-   Date:
-   Description:    (program requirements)
-   Input:
-   Output:
-   Compilation instructions:
-   Usage:
-   Known bugs/missing features:
-   Modifications:
-   Date                Comment            
-   ----    ------------------------------------------------
+   Program: Fractals
+   Author: Charles Bonn and Christian Sieh
+   Class: CSC433
+   Instructor: Dr. John Weiss
+   Date: 10/21/16
+   Description: This file contains the functions that are used across
+            multiple files and are not exclusive to the Julia and Mandel
+            sets.
+   Known bugs/missing features: N/A
  ************************************************************************/
 #include "Util.h"
 
@@ -37,6 +32,14 @@ void plotPoint (point z)
 
 }
 
+ /************************************************************************
+   Function: printPoint
+   Author: Charles Bonn
+   Description: This function takes a point and outputs it's values. Used
+                for debugging purposes.
+   Parameters:
+        point z - The point's values we are trying to print.
+ ************************************************************************/
 void printPoint (point z)
 {
     cerr << "Point position: (" << z.x << "," << z.y << ")\n";

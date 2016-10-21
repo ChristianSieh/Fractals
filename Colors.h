@@ -1,13 +1,11 @@
-/************************************************************************
+ /************************************************************************
    Program: Fractals
    Author: Charles Bonn
-   Class: csc433
-   Date: 10/27/2016
-   Description: Header file for the Color functions
-   Known bugs/missing features:
-   Modifications:
-   Date                Comment            
-   ----    ------------------------------------------------
+   Class: CSC433
+   Instructor: John Wiess
+   Date: 10/21/2016
+   Description: Header file for color functions
+   Known bugs/missing features: N/A
  ************************************************************************/
 
 #ifndef COLOR_H

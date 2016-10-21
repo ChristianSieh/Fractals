@@ -1,15 +1,12 @@
  /************************************************************************
    Program: Fractals
    Author: Charles Bonn
-   Class: csc433
+   Class: CSC433
    Instructor: John Weiss
-   Date: 10/27/201
+   Date: 10/21/201
    Description:   Color functions for Fractals. This file handles color
-		options for the pixels
-   Known bugs/missing features:
-   Modifications:
-   Date                Comment            
-   ----    ------------------------------------------------
+		options for the pixels.
+   Known bugs/missing features: N/A
  ************************************************************************/
 #include "Colors.h"
 
@@ -60,7 +57,7 @@ void setColorMap( vector<point> &points )
    Author: Charles Bonn
    Description: Generates random color values for the color set
    Parameters: 
-        vector<point &points - vector of points 
+        vector<point> &points - vector of points 
  ************************************************************************/
 void randomColorMap( vector<point> &points)
 {
@@ -73,17 +70,6 @@ void randomColorMap( vector<point> &points)
     bon = rand() % 2;
 
     setColorMap(points);
-}
-
- /************************************************************************
-   Function: printColorMap
-   Author: Charles Bonn
-   Description: not implemented
-   Parameters:
- ************************************************************************/
-void printColorMap()
-{ 
-   
 }
 
  /************************************************************************
