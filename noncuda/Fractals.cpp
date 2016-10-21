@@ -125,7 +125,7 @@ int main(int argc, char* argv[])
     else
     {
         mandelInit(points);
-	setColorMap(points);
+	    setColorMap(points);
         juliaSet = true;
     }
     /* start timer */
@@ -183,7 +183,13 @@ void display(void)
         }
         
 	    setColorMap(points);
-        reshape(ScreenWidth, ScreenHeight);
+
+        // Use the current viewport coordinates to reshape after we
+        // zoom or pan
+        GLint nViewport[4];
+        glGetIntegerv(GL_VIEWPORT, nViewport);
+        reshape(nViewport[1], nViewport[3]);
+
         view.change = false;
     } 
 
@@ -258,7 +264,6 @@ void keyboard( unsigned char key, int x, int y )
 {
     // correct for upside-down screen coordinates
     y = ScreenHeight - y;
-    cerr << "keypress: " << key << " (" << int( key ) << ") at (" << x << "," << y << ")\n";
 
     // process keypresses
     switch ( key )
@@ -304,25 +309,18 @@ void keyboard( unsigned char key, int x, int y )
 	        break;
 
 	    // key: a - animate color map
-            case 97:
+        case 97:
 	        if( !animation )
-                	animation = true;
+            	animation = true;
 	        else
-		    animation = false;
+		        animation = false;
                 glutPostRedisplay();
 	        break;
 
 	    // key: r - generate random color map
 	    case 114:
-	        randomColorMap(points);
-                glutPostRedisplay();
-	        break;
-
-	    // key: h - prints debug help
-	    case 104:
-	        cerr << "size of points: " << points.size() << "\n";
-	        cerr << "zoomVal: " << view.z << endl;
-	        //printColorMap();
+            randomColorMap(points);
+            glutPostRedisplay();
 	        break;
 
 	    // key: - - zoom out
@@ -332,7 +330,6 @@ void keyboard( unsigned char key, int x, int y )
 	            view.z -= .02;
 		        view.change = true;
             }
-	        cerr << "zoom: " << view.z << endl;
 	        glutPostRedisplay();
 	        break;
 
@@ -341,7 +338,6 @@ void keyboard( unsigned char key, int x, int y )
 		    if( view.z < 21556.6 )
 		    {
 	            view.z += .02 ;
-                cerr << "zoom: " << view.z << endl;
 	            view.change = true;
             }
 
@@ -350,7 +346,6 @@ void keyboard( unsigned char key, int x, int y )
 		    if( view.z < 21556.6 )
 		    {
 	            view.z += .02 ;
-                cerr << "zoom: " << view.z << endl;
 	            view.change = true;
             }
 	        glutPostRedisplay();
@@ -419,7 +414,6 @@ void mouseclick(int button, int state, int x, int y)
 		    if( view.z < 21556.6 )
 		    {
 	            view.z += .02 ;
-                    cerr << "zoom: " << view.z << endl;
 	            view.change = true;
             }
             break;
@@ -439,14 +433,7 @@ void mouseclick(int button, int state, int x, int y)
 	        if ( state == GLUT_DOWN )
             {
                 mouseX = x;
-                mouseY = y;
-                cerr << "mouse click: left press at    (" << x << "," << y << ")\n";		    
-            }
-            else if ( state == GLUT_UP )
-            {
-                //mouseX = 0;
-                //mouseY = 0;
-                cerr << "mouse click: left release at  (" << x << "," << y << ")\n";
+                mouseY = y;	    
             }
             break;
     }
@@ -465,11 +452,15 @@ void mousedrag(int x, int y)
 {
     y = ScreenHeight - y;
 
+    // Get ratio of complex coords to pixel coords
     float xScale = getWidth() / (ScreenWidth);
     float yScale = getHeight() / (ScreenHeight);
 
-    view.x = (mouseX - x) * xScale;
-    view.y = (mouseY - y) * yScale;
+    // Get the diff from where the mouse was clicked to where it was dragged
+    // Scale to complex coords
+    // Mulitply by .01 to slow down panning
+    view.x += (mouseX - x) * xScale * .01;
+    view.y += (mouseY - y) * yScale * .01;
 
     view.change = true;
 }
