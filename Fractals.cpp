@@ -58,6 +58,7 @@ int zoomX;
 int zoomY;
 vector<point> points;
 vector<point> jpoints;
+complexNum comPoint;
 
 /*********************** function prototypes ***************************/
 void init( void );
@@ -167,9 +168,6 @@ void init(void)
  ************************************************************************/
 void display(void)
 {
-    float xScale = getWidth() / (ScreenWidth * 10);
-    float yScale = getHeight() / (ScreenHeight * 10);
-
     glClear(GL_COLOR_BUFFER_BIT);
 
     if(view.change)
@@ -177,37 +175,14 @@ void display(void)
         changeView(view);
         if(!juliaSet)
         {
-	   
-// Get the origin of the screen so our point
-        // is in the correct quadrant
-        int xOrigin = ScreenWidth / 2;
-        int yOrigin = ScreenHeight / 2;
-
-        // If we start with a Julia set then we don't have any mouse
-        // position data so we pick a point close to the origin of the
-        // screen so we get an interesting Julia Set
-        point initialPoint;
-        initialPoint.x = xOrigin - 50;
-        initialPoint.y = yOrigin + 50;
-
-        initialPoint.x = initialPoint.x - xOrigin;
-        initialPoint.y = initialPoint.y - yOrigin;
-
-        complexNum comPoint;
-
-        // Convert the pixel point into a a point in the complex plane
-        comPoint.x = (getWidth() / ScreenWidth) * initialPoint.x;
-        comPoint.y = (getHeight() / ScreenHeight) * initialPoint.y;
-
-        juliaInit(points, comPoint);
- 
+            juliaInit(points, comPoint);
         }
         else
         {
              mandelInit(points);
         }
         
-	setColorMap(points);
+	    setColorMap(points);
         reshape(ScreenWidth, ScreenHeight);
         view.change = false;
     } 
@@ -215,8 +190,6 @@ void display(void)
     // Draw the fractal
     for(unsigned int i = 0; i < points.size(); i++)
     {
-        //points[i].x += (xOffset * xScale);
-        //points[i].y += (yOffset * yScale);
         plotPoint(points[i]);
     }
 
@@ -299,8 +272,6 @@ void keyboard( unsigned char key, int x, int y )
         case 106: 
             if(juliaSet)
             {
-                complexNum comPoint;
-
                 // Get the origin of the screen so our point
                 // is in the correct quadrant
                 int xOrigin = ScreenWidth / 2;
@@ -367,13 +338,19 @@ void keyboard( unsigned char key, int x, int y )
 
 	    // key: = - alt for + on laptops
 	    case 61:
+		    if( view.z < 21556.6 )
+		    {
+	            view.z += .02 ;
+                cerr << "zoom: " << view.z << endl;
+	            view.change = true;
+            }
 
 	    // key: + - zoom in
 	    case 43:
 		    if( view.z < 21556.6 )
 		    {
 	            view.z += .02 ;
-                    cerr << "zoom: " << view.z << endl;
+                cerr << "zoom: " << view.z << endl;
 	            view.change = true;
             }
 	        glutPostRedisplay();
@@ -403,38 +380,23 @@ void special( int key, int x, int y )
     switch ( key )
     {
         case GLUT_KEY_LEFT:
-            for(unsigned int i = 0; i < points.size(); i++)
-            {
-                //points[i].x -= .1;
-                view.x -= .01;
-		view.change = true;
-            }
+            view.x += .01;
+	        view.change = true;
             break;
         case GLUT_KEY_RIGHT:;
-            for(unsigned int i = 0; i < points.size(); i++)
-            {
-                //points[i].x += .1;
-                view.x += .01;
-		view.change = true;
-            }
+            view.x -= .01;
+	        view.change = true;
             break;
         case GLUT_KEY_UP:
-            for(unsigned int i = 0; i < points.size(); i++)
-            {
-                //points[i].y += .1;
-                view.y += .01;
-                view.change = true;
-            }
+            view.y -= .01;
+            view.change = true;
             break;
         case GLUT_KEY_DOWN:
-            for(unsigned int i = 0; i < points.size(); i++)
-            {
-                //points[i].y -= .1;
-                view.y -= .01;
-                view.change = true;
-            }
+            view.y += .01;
+            view.change = true;
             break;
     }
+
     glutPostRedisplay();
 }
 
@@ -482,8 +444,8 @@ void mouseclick(int button, int state, int x, int y)
             }
             else if ( state == GLUT_UP )
             {
-                mouseX = 0;
-                mouseY = 0;
+                //mouseX = 0;
+                //mouseY = 0;
                 cerr << "mouse click: left release at  (" << x << "," << y << ")\n";
             }
             break;
@@ -503,6 +465,11 @@ void mousedrag(int x, int y)
 {
     y = ScreenHeight - y;
 
-    xOffset = x - mouseX;
-    yOffset = y - mouseY;
+    float xScale = getWidth() / (ScreenWidth);
+    float yScale = getHeight() / (ScreenHeight);
+
+    view.x = (mouseX - x) * xScale;
+    view.y = (mouseY - y) * yScale;
+
+    view.change = true;
 }
