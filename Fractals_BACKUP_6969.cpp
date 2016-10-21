@@ -230,6 +230,7 @@ void keyboard( unsigned char key, int x, int y )
         case 106: 
             if(juliaSet)
             {
+<<<<<<< HEAD
                 complexNum comPoint;
                 int xOrigin = ScreenWidth / 2;
                 int yOrigin = ScreenHeight / 2;
@@ -242,6 +243,10 @@ void keyboard( unsigned char key, int x, int y )
 
                 juliaInit(points, comPoint);
                 setColorMap(points);
+=======
+                mandelInit(points, view);
+        	    setColorMap(points);
+>>>>>>> 39444fb7e7e74205d23ddc3eecf0b37dff1132cf
                 juliaSet = false;
             }
             else

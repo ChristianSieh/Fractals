@@ -13,6 +13,8 @@
 
 #include "Mandel.h"
 
+
+static GLint maxIter = 1000;
 /* Calculate the square of a complex number. */
 /************************************************************************
    Function: complexSquare
@@ -63,17 +65,21 @@ GLint mandelSqTransf ( complexNum z0, GLint maxIter )
        Glint maxIter - number of iterations per point
        vector<complexNum> &points - vector of points
 ************************************************************************/
-void mandelbrot ( GLint nx, GLint ny, GLint maxIter, vector<point> &points )
+void mandelbrot ( GLint nx, GLint ny, vector<point> &points )
 {
     complexNum z, zIncr;
     point currPoint;
     GLint iterCount;
 
-    zIncr.x = complexWidth / GLfloat ( nx );
-    zIncr.y = complexHeight / GLfloat ( ny );
 
+    /* initialize complex values */
+    zIncr.x = complexWidth / ( GLfloat ( nx ) );
+    zIncr.y = complexHeight / ( GLfloat ( ny ) );
+	
+    /* go though x values */
     for ( z.x = xComplexMin; z.x < xComplexMax; z.x += zIncr.x )
     {
+	/* go though y values */
         for ( z.y = yComplexMin; z.y < yComplexMax; z.y += zIncr.y )
         {
 	        /* Calculate point value */ 
@@ -82,9 +88,9 @@ void mandelbrot ( GLint nx, GLint ny, GLint maxIter, vector<point> &points )
 	        /* Save point values to point */
 	        currPoint.x = z.x;
 	        currPoint.y = z.y;
-	
 	        currPoint.colorSpot = iterCount;
                
+		/* push point to stack */
 	        points.push_back ( currPoint );
         }
     }
@@ -96,10 +102,10 @@ void mandelbrot ( GLint nx, GLint ny, GLint maxIter, vector<point> &points )
   Description: init for mandelbrot points
   Parameters: vector<point> &points - vector of points
 ************************************************************************/
-void mandelInit ( vector<point> &points )
+void mandelInit ( vector<point> &points, viewMod &view )
 {
     /* Set number of x and y subdivisions and the max iterations. */
-    GLint nx = 1000, ny = 1000, maxIter = 1000;
+    GLint nx = 1000, ny = 1000;//, maxIter = 1500;
     glClear ( GL_COLOR_BUFFER_BIT );
 
     cerr << "Mandel init" << endl;
@@ -107,6 +113,7 @@ void mandelInit ( vector<point> &points )
     points.clear();
 
     /* Clear display window. */
-    mandelbrot ( nx, ny, maxIter, points );
+    //mandelbrot ( nx, ny, maxIter, points );
+    mandelbrot( nx, ny, points);
 }
 
