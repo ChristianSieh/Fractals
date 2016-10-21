@@ -1,13 +1,25 @@
  /************************************************************************
    Program: Fractals
    Author: Charles Bonn and Christian Sieh
-   Class: csc433
+   Class: CSC433
    Instructor: John Weiss
-   Date: 10/27/2016
-   Description:    (program requirements)
+   Date: 10/21/2016
+   Description: The purpose of this program is to display the Julia and
+                Mandelbrot sets. This program will initialize one of the
+                two fractals and then the user is able to switch between
+                the sets by using the "j" key. The Julia set that is
+                generated is based on the mouse position. The user is also
+                able to pan and zoom around the fractal. Panning is done
+                by using the arrow keys or clicking and dragging with the
+                mouse. Zooming is done with the "+" and "-" keys or a
+                mouse scroll wheel. The user can also change the color
+                map that is used to display the fractal by using the "c"
+                key for predifined colors, or the "r" key for a random
+                color map. Finally, the user can animate the color map by
+                pushing the "a" key.
    Input: None
-   Output: Graphical window with Mandelbrot set
-   Compilation instructions: run make file
+   Output: Graphical window with Mandelbrot or Julia set
+   Compilation instructions: Run make file
    Usage: ./Fractals
    Known bugs/missing features:
    Modifications:
@@ -29,6 +41,12 @@ using namespace std;
 // Set initial size of display window
 GLsizei ScreenWidth = 600, ScreenHeight = 600;
 
+// keypresses
+const int EscapeKey = 27;
+
+//Global varables
+double zoomVal = 0;
+viewMod view;
 bool juliaSet = false;
 bool animation = false;
 int animationSpeed = 100;
@@ -40,12 +58,6 @@ int zoomX;
 int zoomY;
 vector<point> points;
 vector<point> jpoints;
-// keypresses
-const int EscapeKey = 27;
-
-//Global varables
-double zoomVal = 0;
-viewMod view;
 
 /*********************** function prototypes ***************************/
 void init( void );
@@ -58,7 +70,7 @@ void mouseclick( int button, int state, int x, int y );
 void mousedrag( int x, int y );
 
  /************************************************************************
-   Function: main
+   Function: Main
    Author: Charles Bonn and Christian Sieh
    Description: The main function of the program which makes initilization 
                 calls and starts the main glut loop
@@ -84,13 +96,27 @@ int main(int argc, char* argv[])
     /* initilize points */
     if(juliaSet)
     {
+        // Get the origin of the screen so our point
+        // is in the correct quadrant
+        int xOrigin = ScreenWidth / 2;
+        int yOrigin = ScreenHeight / 2;
+
+        // If we start with a Julia set then we don't have any mouse
+        // position data so we pick a point close to the origin of the
+        // screen so we get an interesting Julia Set
         point initialPoint;
-        initialPoint.x = 100;
-        initialPoint.y = 100;
+        initialPoint.x = xOrigin - 50;
+        initialPoint.y = yOrigin + 50;
+
+        initialPoint.x = initialPoint.x - xOrigin;
+        initialPoint.y = initialPoint.y - yOrigin;
 
         complexNum comPoint;
+
+        // Convert the pixel point into a a point in the complex plane
         comPoint.x = (complexWidth / ScreenWidth) * initialPoint.x;
         comPoint.y = (complexHeight / ScreenHeight) * initialPoint.y;
+
         juliaInit(points, comPoint);
         setColorMap(points);
         juliaSet = false;
@@ -155,6 +181,7 @@ void display(void)
         view.change = false;
     } 
 
+    // Draw the fractal
     for(unsigned int i = 0; i < points.size(); i++)
     {
         points[i].x += (xOffset * xScale);
@@ -163,15 +190,9 @@ void display(void)
     }
 
     glPushMatrix();
-  
     glLoadIdentity();
-    glColor3f( 1.0, 1.0, 1.0 );
-    //glTranslatef( 50, 50, 0);
-    glRecti( ScreenWidth - 100 , ScreenHeight - 100, ScreenWidth,ScreenHeight );
-    //glPushMatrix(); 
-    //glPopMatrix();
-
     glPopMatrix();
+
     xOffset = 0;
     yOffset = 0;
 
@@ -195,6 +216,7 @@ void update( int value )
     glutPostRedisplay();
     glutTimerFunc( animationSpeed, update, 0 );
 }
+
  /************************************************************************
    Function: reshape
    Author: Charles Bonn and Christian Sieh
@@ -247,12 +269,16 @@ void keyboard( unsigned char key, int x, int y )
             if(juliaSet)
             {
                 complexNum comPoint;
+
+                // Get the origin of the screen so our point
+                // is in the correct quadrant
                 int xOrigin = ScreenWidth / 2;
                 int yOrigin = ScreenHeight / 2;
 
                 x = x - xOrigin;
                 y = y - yOrigin;
 
+                // Convert the pixel point into a a point in the complex plane
                 comPoint.x = (complexWidth / ScreenWidth) * x;
                 comPoint.y = (complexHeight / ScreenHeight) * y;
 
@@ -388,8 +414,7 @@ void special( int key, int x, int y )
    Parameters: 
         int button - Which mouse button was pressed
 		int state - The state of mouse button
-  ************************************************************************/
-          
+  ************************************************************************/     
 void mouseclick(int button, int state, int x, int y)
 {
     y = ScreenHeight - y;
@@ -399,34 +424,21 @@ void mouseclick(int button, int state, int x, int y)
 
 	switch( button )
      {
-	     if ( state == GLUT_DOWN )
-            {
-                mouseX = x;
-                mouseY = y;
-                cerr << "mouse click: left press at    (" << x << "," << y << ")\n";		    
-            }
-            else if ( state == GLUT_UP )
-            {
-                mouseX = 0;
-                mouseY = 0;
-                cerr << "mouse click: left release at  (" << x << "," << y << ")\n";
-            }
-            break;
-
-        case GLUT_RIGHT_BUTTON:             // right button
-            if ( state == GLUT_DOWN )           // press
-                cerr << "mouse click: right press at   (" << x << "," << y << ")\n";
-            else if ( state == GLUT_UP )        // release
-                cerr << "mouse click: right release at (" << x << "," << y << ")\n";
-            break;
+        // Store  mouseX and mouseY in case of click and drag
+	    if ( state == GLUT_DOWN )
+        {
+            mouseX = x;
+            mouseY = y;
+            cerr << "mouse click: left press at    (" << x << "," << y << ")\n";		    
+        }
+        else if ( state == GLUT_UP )
+        {
+            mouseX = 0;
+            mouseY = 0;
+            cerr << "mouse click: left release at  (" << x << "," << y << ")\n";
+        }
+        break;
     }
-
-    glReadPixels(x,y,1,1,GL_RGB,GL_UNSIGNED_BYTE, pick_col);
-    rgb.r = pick_col[0]/255.0;
-    rgb.g = pick_col[1]/255.0;
-    rgb.b = pick_col[2]/255.0;
-    cerr << "R: " << rgb.r << " G: " << rgb.g << " B: " << rgb.b << endl;
- 
 }
 
  /************************************************************************

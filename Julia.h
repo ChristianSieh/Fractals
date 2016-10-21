@@ -1,3 +1,13 @@
+ /************************************************************************
+   Program: Fractals
+   Author: Charles Bonn and Christian Sieh
+   Class: CSC433
+   Instructor: John Wiess
+   Date: 10/21/2016
+   Description: Header file for julia functions
+   Known bugs/missing features: N/A
+ ************************************************************************/
+
 #ifndef JULIA_H
 #define JULIA_H
 

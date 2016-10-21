@@ -1,14 +1,11 @@
 /************************************************************************
   Program: Fractals
   Author: Charles Bonn and Christian Sieh
-  Class: csc433
+  Class: CSC433
   Instructor: John Weiss
-  Date: 10/27/2016
-  Description:  mandelbrot functions
-  Known bugs/missing features:
-  Modifications:
-  Date                Comment
-  ----    ------------------------------------------------
+  Date: 10/21/2016
+  Description:  Mandelbrot functions
+  Known bugs/missing features: N/A
 ************************************************************************/
 
 #include "Mandel.h"
@@ -18,7 +15,7 @@ static GLint maxIter = 1000;
 /* Calculate the square of a complex number. */
 /************************************************************************
    Function: complexSquare
-   Author: taken from book
+   Author: Taken from book
    Description: calculates the square of a complex number
    Parameters:
  complexNum z - a complex number of a point
@@ -33,7 +30,7 @@ complexNum complexSquare ( complexNum z )
 
 /************************************************************************
   Function: mandelSqTransf
-  Author: taken from book
+  Author: Taken from book
   Description: squares complex values
   Parameters:
  complexNum z0 -
@@ -57,7 +54,7 @@ GLint mandelSqTransf ( complexNum z0, GLint maxIter )
 
 /************************************************************************
   Function: mandelbrot
-  Author: taken from book and modified by Charles Bonn and Christian Sieh
+  Author: Taken from book and modified by Charles Bonn and Christian Sieh
   Description: calculates mandelbrot points
   Parameters:
  GLint nx - x points

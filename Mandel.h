@@ -1,14 +1,11 @@
  /************************************************************************
    Program: Fractals
    Author: Charles Bonn and Christian Sieh
-   Class: csc433
+   Class: CSC433
    Instructor: John Wiess
-   Date: 10/27/2016
-   Description:    header file for mandelbrot functions
-   Known bugs/missing features:
-   Modifications:
-   Date                Comment            
-   ----    ------------------------------------------------
+   Date: 10/21/2016
+   Description: Header file for mandelbrot functions
+   Known bugs/missing features: N/A
  ************************************************************************/
 
 #ifndef MANDEL_H
