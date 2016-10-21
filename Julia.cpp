@@ -74,12 +74,19 @@ void julia ( GLint nx, GLint ny, GLint maxIter, vector<point> &points, complexNu
     point currPoint;
     GLint iterCount;
 
-    zIncr.x = complexWidth / GLfloat ( nx );
-    zIncr.y = complexHeight / GLfloat ( ny );
+    GLfloat cWidth = getWidth();
+    GLfloat cHeight = getHeight();
+    GLfloat xMin = getXMin();
+    GLfloat xMax = getXMax();
+    GLfloat yMin = getYMin();
+    GLfloat yMax = getYMax();
 
-    for ( z.x = xComplexMin; z.x < xComplexMax; z.x += zIncr.x )
+    zIncr.x = cWidth / GLfloat ( nx );
+    zIncr.y = cHeight / GLfloat ( ny );
+
+    for ( z.x = xMin; z.x < xMax; z.x += zIncr.x )
     {
-        for ( z.y = yComplexMin; z.y < yComplexMax; z.y += zIncr.y )
+        for ( z.y = yMin; z.y < yMax; z.y += zIncr.y )
         {
 	        /* Calculate point value */ 
             iterCount = juliaSqTransf ( c, z, maxIter );

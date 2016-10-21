@@ -13,6 +13,9 @@
 
 static const GLfloat xxComplexMin = -5.00, xxComplexMax = 5.00;
 static const GLfloat yyComplexMin = -5.00, yyComplexMax = 5.00;
+static GLfloat xComplexMin, xComplexMax;
+static GLfloat yComplexMin, yComplexMax;
+static GLfloat complexHeight, complexWidth;
  /************************************************************************
    Function: plotPoint
    Author: Charles Bonn and Christian Sieh

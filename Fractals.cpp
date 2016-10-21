@@ -114,8 +114,8 @@ int main(int argc, char* argv[])
         complexNum comPoint;
 
         // Convert the pixel point into a a point in the complex plane
-        comPoint.x = (complexWidth / ScreenWidth) * initialPoint.x;
-        comPoint.y = (complexHeight / ScreenHeight) * initialPoint.y;
+        comPoint.x = (getWidth() / ScreenWidth) * initialPoint.x;
+        comPoint.y = (getHeight() / ScreenHeight) * initialPoint.y;
 
         juliaInit(points, comPoint);
         setColorMap(points);
@@ -167,8 +167,8 @@ void init(void)
  ************************************************************************/
 void display(void)
 {
-    float xScale = complexWidth / (ScreenWidth * 10);
-    float yScale = complexHeight / (ScreenHeight * 10);
+    float xScale = getWidth() / (ScreenWidth * 10);
+    float yScale = getHeight() / (ScreenHeight * 10);
 
     glClear(GL_COLOR_BUFFER_BIT);
 
@@ -233,8 +233,12 @@ void reshape(GLint newWidth, GLint newHeight)
 
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
+    GLfloat xMin = getXMin();
+    GLfloat xMax = getXMax();
+    GLfloat yMin = getYMin();
+    GLfloat yMax = getYMax();
 
-    gluOrtho2D(xComplexMin, xComplexMax, yComplexMin, yComplexMax);
+    gluOrtho2D(xMin, xMax , yMin, yMax);
     glClear(GL_COLOR_BUFFER_BIT);
 }
 
@@ -279,8 +283,8 @@ void keyboard( unsigned char key, int x, int y )
                 y = y - yOrigin;
 
                 // Convert the pixel point into a a point in the complex plane
-                comPoint.x = (complexWidth / ScreenWidth) * x;
-                comPoint.y = (complexHeight / ScreenHeight) * y;
+                comPoint.x = (getWidth() / ScreenWidth) * x;
+                comPoint.y = (getHeight() / ScreenHeight) * y;
 
                 juliaInit(points, comPoint);
                 setColorMap(points);
@@ -418,9 +422,6 @@ void special( int key, int x, int y )
 void mouseclick(int button, int state, int x, int y)
 {
     y = ScreenHeight - y;
-
-    unsigned char pick_col[3];
-    color rgb;
 
 	switch( button )
      {
