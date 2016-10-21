@@ -174,24 +174,51 @@ void display(void)
 
     if(view.change)
     {
-        cerr << " changed " << endl;
         changeView(view);
-        mandelInit(points);
+        if(!juliaSet)
+        {
+	   
+// Get the origin of the screen so our point
+        // is in the correct quadrant
+        int xOrigin = ScreenWidth / 2;
+        int yOrigin = ScreenHeight / 2;
+
+        // If we start with a Julia set then we don't have any mouse
+        // position data so we pick a point close to the origin of the
+        // screen so we get an interesting Julia Set
+        point initialPoint;
+        initialPoint.x = xOrigin - 50;
+        initialPoint.y = yOrigin + 50;
+
+        initialPoint.x = initialPoint.x - xOrigin;
+        initialPoint.y = initialPoint.y - yOrigin;
+
+        complexNum comPoint;
+
+        // Convert the pixel point into a a point in the complex plane
+        comPoint.x = (getWidth() / ScreenWidth) * initialPoint.x;
+        comPoint.y = (getHeight() / ScreenHeight) * initialPoint.y;
+
+        juliaInit(points, comPoint);
+ 
+        }
+        else
+        {
+             mandelInit(points);
+        }
+        
 	setColorMap(points);
+        reshape(ScreenWidth, ScreenHeight);
         view.change = false;
     } 
 
     // Draw the fractal
     for(unsigned int i = 0; i < points.size(); i++)
     {
-        points[i].x += (xOffset * xScale);
-        points[i].y += (yOffset * yScale);
+        //points[i].x += (xOffset * xScale);
+        //points[i].y += (yOffset * yScale);
         plotPoint(points[i]);
     }
-
-    glPushMatrix();
-    glLoadIdentity();
-    glPopMatrix();
 
     xOffset = 0;
     yOffset = 0;

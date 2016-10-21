@@ -76,13 +76,6 @@ void mandelbrot ( GLint nx, GLint ny, vector<point> &points)
     GLfloat cWidth = getWidth();
     GLfloat cHeight = getHeight();
   
-    cerr << "inside " << endl;
-    cerr << "xmin: " << xMin << endl;
-    cerr << "xmax: " << xMax << endl;
-    cerr << "ymin: " << yMin << endl;
-    cerr << "ymax: " << yMax << endl;
-    cerr << "cWidth: " << cWidth << endl;
-    cerr << "cheight: " << cHeight << endl;
     
     /* initialize complex values */
     zIncr.x = cWidth / ( GLfloat ( nx ) );

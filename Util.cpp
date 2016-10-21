@@ -56,7 +56,6 @@ void printPoint (point z)
 
 void changeView(viewMod view)
 {
-    cerr << "view.z: " << view.z << endl; 
     xComplexMin = (xxComplexMin / view.z) + view.x;
     xComplexMax = (xxComplexMax / view.z) + view.x;
     yComplexMin = (yyComplexMin / view.z) + view.y;
@@ -64,12 +63,6 @@ void changeView(viewMod view)
 
     complexWidth = fabs(xComplexMax - xComplexMin);
     complexHeight = fabs(yComplexMax - yComplexMin); 
-    cerr << "xmin: " << xComplexMin << endl;
-    cerr << "xmax: " << xComplexMax << endl;
-    cerr << "ymin: " << yComplexMin << endl;
-    cerr << "ymax: " << yComplexMax << endl;
-    cerr << "Width: " << complexWidth << endl;
-    cerr << "Height: " << complexHeight << endl;
 }
 
 float getXMin()
