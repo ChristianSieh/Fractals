@@ -29,23 +29,21 @@ using namespace std;
 // Set initial size of display window
 GLsizei ScreenWidth = 600, ScreenHeight = 600;
 
-bool juliaSet = false;
+bool juliaSet = true;
 bool animation = false;
 int animationSpeed = 100;
 int mouseX = 0;
 int mouseY = 0;
 int xOffset;
 int yOffset;
-int zoomX;
-int zoomY;
 vector<point> points;
-vector<point> jpoints;
+
 // keypresses
 const int EscapeKey = 27;
 
 //Global varables
 double zoomVal = 0;
-viewMod view;
+
 
 /*********************** function prototypes ***************************/
 void init( void );
@@ -71,24 +69,17 @@ int main(int argc, char* argv[])
     /* main initilizations */
     glutInit(&argc, argv);
     init();
-    
     /* initilize points */
     if(juliaSet)
     {
         point initialPoint;
-        initialPoint.x = 100;
-        initialPoint.y = 100;
-
-        complexNum comPoint;
-        comPoint.x = (complexWidth / ScreenWidth) * initialPoint.x;
-        comPoint.y = (complexHeight / ScreenHeight) * initialPoint.y;
-        juliaInit(points, comPoint);
+        juliaInit(points, initialPoint);
         setColorMap(points);
         juliaSet = false;
     }
     else
     {
-        mandelInit(points, view);
+        mandelInit(points);
 	    setColorMap(points);
         juliaSet = true;
     }
@@ -136,13 +127,7 @@ void display(void)
     float yScale = complexHeight / (ScreenHeight * 10);
 
     glClear(GL_COLOR_BUFFER_BIT);
-
-    if(view.change)
-    {
-        mandelInit(points, view);
-	setColorMap(points);
-        view.change = false;
-    } 
+ 
 
     for(unsigned int i = 0; i < points.size(); i++)
     {
@@ -156,10 +141,9 @@ void display(void)
     glLoadIdentity();
     glColor3f( 1.0, 1.0, 1.0 );
     //glTranslatef( 50, 50, 0);
-    glRecti( ScreenWidth - 100 , ScreenHeight - 100, ScreenWidth,ScreenHeight );
+    glRecti( ScreenWidth -1000 , ScreenHeight - 100, ScreenWidth,ScreenHeight );
     //glPushMatrix(); 
     //glPopMatrix();
-
     glPopMatrix();
     xOffset = 0;
     yOffset = 0;
@@ -201,7 +185,7 @@ void reshape(GLint newWidth, GLint newHeight)
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
 
-    gluOrtho2D(xComplexMin/view.z, xComplexMax/view.z, yComplexMin/view.z, yComplexMax/view.z);
+    gluOrtho2D(xComplexMin, xComplexMax, yComplexMin, yComplexMax);
     glClear(GL_COLOR_BUFFER_BIT);
 }
 
@@ -235,24 +219,15 @@ void keyboard( unsigned char key, int x, int y )
         case 106: 
             if(juliaSet)
             {
-                complexNum comPoint;
-                int xOrigin = ScreenWidth / 2;
-                int yOrigin = ScreenHeight / 2;
-
-                x = x - xOrigin;
-                y = y - yOrigin;
-
-                comPoint.x = (complexWidth / ScreenWidth) * x;
-                comPoint.y = (complexHeight / ScreenHeight) * y;
-
-                juliaInit(points, comPoint);
-                setColorMap(points);
+                mandelInit(points);
+        	    setColorMap(points);
                 juliaSet = false;
             }
             else
             {
-                mandelInit(points);
-        	    setColorMap(points);
+                point initialPoint;
+                juliaInit(points, initialPoint);
+                setColorMap(points);
                 juliaSet = true;
             }
             glutPostRedisplay();
@@ -260,7 +235,7 @@ void keyboard( unsigned char key, int x, int y )
 
 	    // key: c - change color map
 	    case 99:
-	        swapColor(points);
+	        swapColor(points); 
 	        glutPostRedisplay();
 	        break;
 
@@ -282,18 +257,16 @@ void keyboard( unsigned char key, int x, int y )
 	    // key: h - prints debug help
 	    case 104:
 	        cerr << "size of points: " << points.size() << "\n";
-	        cerr << "zoomVal: " << view.z << endl;
+	        cerr << "zoomVal: " << zoomVal << endl;
 	        //printColorMap();
 	        break;
 
 	    // key: - - zoom out
 	    case 45:
-	        if( view.z > 1 )
+	        if( zoomVal > 0 )
 	        {
-	            view.z /= pow(1.01, view.z);
+	            zoomVal -= 1;
                 }
-		cerr << "zoom: " << view.z << endl;
-		view.change = true;
 	        glutPostRedisplay();
 	        break;
 
@@ -302,9 +275,7 @@ void keyboard( unsigned char key, int x, int y )
 
 	    // key: + - zoom in
 	    case 43:
-	        view.z *= pow(1.01, view.z) ;
-                cerr << "zoom: " << view.z << endl;
-	        view.change = true;
+	        zoomVal += 1;
 	        glutPostRedisplay();
 	        break;
 

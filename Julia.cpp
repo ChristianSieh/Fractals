@@ -64,10 +64,8 @@ GLint juliaSqTransf ( complexNum c, complexNum z, GLint maxIter )
                 and colorspot is used by Color.cpp to create a color map.
    Parameters:
  ************************************************************************/
-void julia ( GLint nx, GLint ny, GLint maxIter, vector<point> &points, point initialPoint )
+void julia ( GLint nx, GLint ny, GLint maxIter, vector<point> &points, complexNum c )
 {
-    complexNum c = { -0.7, 0.27015 };
-
     complexNum z, zIncr;
     point currPoint;
     GLint iterCount;
@@ -99,7 +97,7 @@ void julia ( GLint nx, GLint ny, GLint maxIter, vector<point> &points, point ini
    Description:
    Parameters:
  ************************************************************************/
-void juliaInit(vector<point> &points, point initialPoint)
+void juliaInit(vector<point> &points, complexNum c)
 {
     /* Set number of x and y subdivisions and the max iterations. */
     GLint nx = 1000, ny = 1000, maxIter = 1000;
@@ -107,5 +105,5 @@ void juliaInit(vector<point> &points, point initialPoint)
 
     points.clear();
 
-    julia(nx, ny, maxIter, points, initialPoint);
+    julia(nx, ny, maxIter, points, c);
 }
