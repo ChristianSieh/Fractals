@@ -17,7 +17,7 @@ static GLint maxIter = 1000;
 /************************************************************************
    Function: complexSquare
    Author: Taken from book
-   Description: calculates the square of a complex number
+   Description: calculates the square of a complex number for parallel
    Parameters:
  complexNum z - a complex number of a point
  ************************************************************************/
@@ -70,12 +70,13 @@ complexNum complexSquare ( complexNum z )
 }
 
 /************************************************************************
-  Function: mandelSqTransf
+  Function: mandelSqTransf_para
   Author: Taken from book
-  Description: squares complex values
-  Parameters:
+  Description: squares complex values in parallel
+  parameters:
  complexNum z0 -
-       Glint maxIter -
+       Glint maxIter - max number of iteratiors
+       points - number of points
 ************************************************************************/
 __global__ void  mandelSqTransf_para (   int maxIter , point *points )
 {
@@ -98,8 +99,6 @@ __global__ void  mandelSqTransf_para (   int maxIter , point *points )
 		count++;
 	    }
 
-	     points[i].x = z.x;
-	     points[i].y = z.y;
 	     points[i].colorSpot = count;
    
     
@@ -150,9 +149,9 @@ void mandelbrot_para ( GLint nx, GLint ny, point *points, cX cmplx)
     int nThreads = 1024;
     int nBlocks = (10000000 + nThreads -1 ) / nThreads;
 
-cerr << "before para " << endl;
+
      mandelSqTransf_para<<< nBlocks, nThreads >>>(maxIter,d_points);	
-cerr << "after para" << endl;
+
      cudaMemcpy( points, d_points, ((size * 10) * sizeof(point)) , cudaMemcpyDeviceToHost );
      cudaFree( d_points ); //free memory
 
