@@ -33,9 +33,9 @@ struct color
 // Holds position and color data for a point
 struct point
 {
-    GLfloat x, y;      //point
-    GLfloat r, g, b;  //color value
-    GLint colorSpot;
+    GLfloat x = 0, y = 0;      //point
+    GLfloat r = 0, g = 0, b = 0;  //color value
+    GLint colorSpot = 0;
 };
 
 // Stores data needed by zooming function
@@ -46,23 +46,16 @@ struct viewMod
     bool change = false;
 };
 
-//static GLfloat xComplexMin = -5.00, xComplexMax = 5.00;
-//static GLfloat yComplexMin = -5.00, yComplexMax = 5.00;
-
-//static GLfloat xComplexMin, xComplexMax;
-//static GLfloat yComplexMin, yComplexMax;
-//static GLfloat xComplexMin = -1.00, xComplexMax = .20;
-//static GLfloat yComplexMin = -.75, yComplexMax = .75;
-//static GLfloat complexWidth;// = fabs(xComplexMax - xComplexMin);
-//static GLfloat complexHeight;// = fabs(yComplexMax - yComplexMin);
+//stores complex valuse
+struct cX
+{
+    GLfloat xCMin = -5.00, xCMax = 5.00;
+    GLfloat yCMin =-5.00, yCMax = -5.00;
+    GLfloat cW = 10;
+    GLfloat cH = 10;
+};
 
 void plotPoint(point z);
 void printPoint(point z);
-void changeView(viewMod view);
-float getXMin();
-float getXMax();
-float getYMin();
-float getYMax();
-float getWidth();
-float getHeight();
+void changeView(viewMod view, cX &cmplx);
 #endif

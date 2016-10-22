@@ -31,7 +31,6 @@
 #include <iostream>
 #include <stdlib.h>
 #include <math.h>
-#include <chrono>
 #include "Mandel.h"
 #include "Julia.h"
 #include "Colors.h"
@@ -48,9 +47,9 @@ const int EscapeKey = 27;
 //Global varables
 double zoomVal = 0;
 viewMod view;
+cX cmplx;
 bool juliaSet = false;
 bool animation = false;
-bool parallel = false;
 int animationSpeed = 100;
 int mouseX = 0;
 int mouseY = 0;
@@ -58,8 +57,9 @@ int xOffset;
 int yOffset;
 int zoomX;
 int zoomY;
-vector<point> points;
-vector<point> jpoints;
+point *points;
+//point points[10000000];
+complexNum comPoint;
 
 /*********************** function prototypes ***************************/
 void init( void );
@@ -82,14 +82,14 @@ void mousedrag( int x, int y );
  ************************************************************************/
 int main(int argc, char* argv[])
 {
-    int n = 1024 ; // cuda
-    
+
+    points = ( point * )malloc( 10000000 *sizeof ( point ) );
     /* main initilizations */
     glutInit(&argc, argv);
     init();
    
     /* initilzie view */
-    changeView(view); 
+    changeView(view, cmplx); 
     /* initilize points */
     if(juliaSet)
     {
@@ -111,8 +111,8 @@ int main(int argc, char* argv[])
         complexNum comPoint;
 
         // Convert the pixel point into a a point in the complex plane
-        comPoint.x = (getWidth() / ScreenWidth) * initialPoint.x;
-        comPoint.y = (getHeight() / ScreenHeight) * initialPoint.y;
+        comPoint.x = (cmplx.cW / ScreenWidth) * initialPoint.x;
+        comPoint.y = (cmplx.cH / ScreenHeight) * initialPoint.y;
 
         juliaInit(points, comPoint);
         setColorMap(points);
@@ -120,8 +120,8 @@ int main(int argc, char* argv[])
     }
     else
     {
-        mandelInit(points);
-	setColorMap(points);
+        mandelInit(points, cmplx);
+	    setColorMap(points);
         juliaSet = true;
     }
     /* start timer */
@@ -129,7 +129,7 @@ int main(int argc, char* argv[])
     /* start main loop */
     glutMainLoop();
 
-    
+    free( points );
     return 0;
 }
 
@@ -165,56 +165,34 @@ void init(void)
  ************************************************************************/
 void display(void)
 {
-    float xScale = getWidth() / (ScreenWidth * 10);
-    float yScale = getHeight() / (ScreenHeight * 10);
-
     glClear(GL_COLOR_BUFFER_BIT);
 
     if(view.change)
     {
-        changeView(view);
+        changeView(view, cmplx);
         if(!juliaSet)
         {
-	   
-// Get the origin of the screen so our point
-        // is in the correct quadrant
-        int xOrigin = ScreenWidth / 2;
-        int yOrigin = ScreenHeight / 2;
-
-        // If we start with a Julia set then we don't have any mouse
-        // position data so we pick a point close to the origin of the
-        // screen so we get an interesting Julia Set
-        point initialPoint;
-        initialPoint.x = xOrigin - 50;
-        initialPoint.y = yOrigin + 50;
-
-        initialPoint.x = initialPoint.x - xOrigin;
-        initialPoint.y = initialPoint.y - yOrigin;
-
-        complexNum comPoint;
-
-        // Convert the pixel point into a a point in the complex plane
-        comPoint.x = (getWidth() / ScreenWidth) * initialPoint.x;
-        comPoint.y = (getHeight() / ScreenHeight) * initialPoint.y;
-
-        juliaInit(points, comPoint);
- 
+            juliaInit(points, comPoint);
         }
         else
         {
-             mandelInit(points);
+             mandelInit(points, cmplx);
         }
         
-	setColorMap(points);
-        reshape(ScreenWidth, ScreenHeight);
+	    setColorMap(points);
+
+        // Use the current viewport coordinates to reshape after we
+        // zoom or pan
+        GLint nViewport[4];
+        glGetIntegerv(GL_VIEWPORT, nViewport);
+        reshape(nViewport[1], nViewport[3]);
+
         view.change = false;
     } 
 
     // Draw the fractal
-    for(unsigned int i = 0; i < points.size(); i++)
+    for(int i = 0; i < 1000000; i++)
     {
-        //points[i].x += (xOffset * xScale);
-        //points[i].y += (yOffset * yScale);
         plotPoint(points[i]);
     }
 
@@ -258,12 +236,8 @@ void reshape(GLint newWidth, GLint newHeight)
 
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    GLfloat xMin = getXMin();
-    GLfloat xMax = getXMax();
-    GLfloat yMin = getYMin();
-    GLfloat yMax = getYMax();
 
-    gluOrtho2D(xMin, xMax , yMin, yMax);
+    gluOrtho2D(cmplx.xCMin, cmplx.xCMax , cmplx.yCMin, cmplx.yCMax);
     glClear(GL_COLOR_BUFFER_BIT);
 }
 
@@ -283,7 +257,6 @@ void keyboard( unsigned char key, int x, int y )
 {
     // correct for upside-down screen coordinates
     y = ScreenHeight - y;
-    cerr << "keypress: " << key << " (" << int( key ) << ") at (" << x << "," << y << ")\n";
 
     // process keypresses
     switch ( key )
@@ -297,8 +270,6 @@ void keyboard( unsigned char key, int x, int y )
         case 106: 
             if(juliaSet)
             {
-                complexNum comPoint;
-
                 // Get the origin of the screen so our point
                 // is in the correct quadrant
                 int xOrigin = ScreenWidth / 2;
@@ -308,8 +279,8 @@ void keyboard( unsigned char key, int x, int y )
                 y = y - yOrigin;
 
                 // Convert the pixel point into a a point in the complex plane
-                comPoint.x = (getWidth() / ScreenWidth) * x;
-                comPoint.y = (getHeight() / ScreenHeight) * y;
+                comPoint.x = (cmplx.cW / ScreenWidth) * x;
+                comPoint.y = (cmplx.cH / ScreenHeight) * y;
 
                 juliaInit(points, comPoint);
                 setColorMap(points);
@@ -317,21 +288,13 @@ void keyboard( unsigned char key, int x, int y )
             }
             else
             {
-                mandelInit(points);
+                mandelInit(points, cmplx);
         	    setColorMap(points);
                 juliaSet = true;
             }
             glutPostRedisplay();
             break;
-            // key: q - change between parallel and sequencial
-            case 113:
-                if( !parallel )
-                    parallel = true;
-		else 
-		    parallel = false;
 
-		glutPostRedisplay();
-		break;
 	    // key: c - change color map
 	    case 99:
 	        swapColor(points);
@@ -339,25 +302,18 @@ void keyboard( unsigned char key, int x, int y )
 	        break;
 
 	    // key: a - animate color map
-            case 97:
+        case 97:
 	        if( !animation )
-                	animation = true;
+            	animation = true;
 	        else
-		    animation = false;
+		        animation = false;
                 glutPostRedisplay();
 	        break;
 
 	    // key: r - generate random color map
 	    case 114:
-	        randomColorMap(points);
-                glutPostRedisplay();
-	        break;
-
-	    // key: h - prints debug help
-	    case 104:
-	        cerr << "size of points: " << points.size() << "\n";
-	        cerr << "zoomVal: " << view.z << endl;
-	        //printColorMap();
+            randomColorMap(points);
+            glutPostRedisplay();
 	        break;
 
 	    // key: - - zoom out
@@ -365,23 +321,26 @@ void keyboard( unsigned char key, int x, int y )
 	        if( view.z > 1 )
 	        {
 	            view.z -= .02;
-		    view.change = true;
-                }
-		cerr << "zoom: " << view.z << endl;
+		        view.change = true;
+            }
 	        glutPostRedisplay();
 	        break;
 
 	    // key: = - alt for + on laptops
 	    case 61:
+		    if( view.z < 21556.6 )
+		    {
+	            view.z += .02 ;
+	            view.change = true;
+            }
 
 	    // key: + - zoom in
 	    case 43:
-		if( view.z < 21556.6 )
-		{
+		    if( view.z < 21556.6 )
+		    {
 	            view.z += .02 ;
-                    cerr << "zoom: " << view.z << endl;
 	            view.change = true;
-                }
+            }
 	        glutPostRedisplay();
 	        break;
 
@@ -409,38 +368,23 @@ void special( int key, int x, int y )
     switch ( key )
     {
         case GLUT_KEY_LEFT:
-            for(unsigned int i = 0; i < points.size(); i++)
-            {
-                //points[i].x -= .1;
-                view.x -= .01;
-		view.change = true;
-            }
+            view.x += .01;
+	        view.change = true;
             break;
         case GLUT_KEY_RIGHT:;
-            for(unsigned int i = 0; i < points.size(); i++)
-            {
-                //points[i].x += .1;
-                view.x += .01;
-		view.change = true;
-            }
+            view.x -= .01;
+	        view.change = true;
             break;
         case GLUT_KEY_UP:
-            for(unsigned int i = 0; i < points.size(); i++)
-            {
-                //points[i].y += .1;
-                view.y += .01;
-                view.change = true;
-            }
+            view.y -= .01;
+            view.change = true;
             break;
         case GLUT_KEY_DOWN:
-            for(unsigned int i = 0; i < points.size(); i++)
-            {
-                //points[i].y -= .1;
-                view.y -= .01;
-                view.change = true;
-            }
+            view.y += .01;
+            view.change = true;
             break;
     }
+
     glutPostRedisplay();
 }
 
@@ -458,20 +402,33 @@ void mouseclick(int button, int state, int x, int y)
 
 	switch( button )
      {
-        // Store  mouseX and mouseY in case of click and drag
-	    if ( state == GLUT_DOWN )
-        {
-            mouseX = x;
-            mouseY = y;
-            cerr << "mouse click: left press at    (" << x << "," << y << ")\n";		    
-        }
-        else if ( state == GLUT_UP )
-        {
-            mouseX = 0;
-            mouseY = 0;
-            cerr << "mouse click: left release at  (" << x << "," << y << ")\n";
-        }
-        break;
+        // Zoom in
+        case 3:
+		    if( view.z < 21556.6 )
+		    {
+	            view.z += .02 ;
+	            view.change = true;
+            }
+            break;
+
+        // Zoom Out
+        case 4:
+	        if( view.z > 1 )
+	        {
+	            view.z -= .02;
+		        view.change = true;
+            }
+            break;
+
+        // Left mouse click
+        case GLUT_LEFT_BUTTON:
+            // Store  mouseX and mouseY in case of click and drag
+	        if ( state == GLUT_DOWN )
+            {
+                mouseX = x;
+                mouseY = y;	    
+            }
+            break;
     }
 }
 
@@ -488,10 +445,15 @@ void mousedrag(int x, int y)
 {
     y = ScreenHeight - y;
 
-    xOffset = x - mouseX;
-    yOffset = y - mouseY;
+    // Get ratio of complex coords to pixel coords
+    float xScale = cmplx.cW / (ScreenWidth);
+    float yScale = cmplx.cH / (ScreenHeight);
+
+    // Get the diff from where the mouse was clicked to where it was dragged
+    // Scale to complex coords
+    // Mulitply by .01 to slow down panning
+    view.x += (mouseX - x) * xScale * .01;
+    view.y += (mouseY - y) * yScale * .01;
+
+    view.change = true;
 }
-
-
-
-

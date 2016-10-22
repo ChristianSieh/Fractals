@@ -23,10 +23,10 @@
 using namespace std;
 
 /*********************** function prototypes ***************************/
-void setColorMap(vector<point> &points);
-void randomColorMap(vector<point> &points);
+void setColorMap(point *points);
+void randomColorMap(point *points);
 void printColorMap();
-void swapColor(vector<point> &points);
-void animateColor(vector<point> &points);
+void swapColor(point *points);
+void animateColor(point *points);
 
 #endif

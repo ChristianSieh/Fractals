@@ -32,9 +32,9 @@ static vector<color> colorMap;
    Parameters: 
         vector<point> &points - vector of points
  ************************************************************************/ 
-void setColorMap( vector<point> &points )
+void setColorMap( point *points )
 {
-    for(unsigned int i = 0; i < points.size(); i++)
+    for(unsigned int i = 0; i < 1000000; i++)
     {
         if( points[i].colorSpot == 1000 )
 	    {
@@ -59,7 +59,7 @@ void setColorMap( vector<point> &points )
    Parameters: 
         vector<point> &points - vector of points 
  ************************************************************************/
-void randomColorMap( vector<point> &points)
+void randomColorMap( point *points)
 {
     srand(time(NULL));
     rmod = rand() % 30 + 1;
@@ -79,7 +79,7 @@ void randomColorMap( vector<point> &points)
    Parameters: 
         vector<point> &points - vector of points
  ************************************************************************/
-void swapColor( vector<point> &points)
+void swapColor( point *points)
 {
     colorRotate++;
 
@@ -124,12 +124,12 @@ void swapColor( vector<point> &points)
    Parameters: 
         vector<point> &points - vector of points
  ************************************************************************/
-void animateColor( vector<point> &points )
+void animateColor( point *points )
 {
     /* value to shift pixel color */
     double shift = .05; 
 
-    for(unsigned int i = 0; i < points.size(); i++)
+    for(unsigned int i = 0; i < 1000000; i++)
     {
         points[i].r = fmod((points[i].r + shift)*ron, 1);
         points[i].g = fmod((points[i].g + shift)*gon, 1);

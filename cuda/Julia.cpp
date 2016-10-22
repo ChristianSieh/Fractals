@@ -68,38 +68,38 @@ GLint juliaSqTransf ( complexNum c, complexNum z, GLint maxIter )
             for the Julia set 
         complexNum c - The initial point that is used as c in z^2 + c
  ************************************************************************/
-void julia ( GLint nx, GLint ny, GLint maxIter, vector<point> &points, complexNum c )
+void julia ( GLint nx, GLint ny, GLint maxIter, point *points, complexNum c )
 {
     complexNum z, zIncr;
     point currPoint;
     GLint iterCount;
 
-    GLfloat cWidth = getWidth();
+   /* GLfloat cWidth = getWidth();
     GLfloat cHeight = getHeight();
     GLfloat xMin = getXMin();
     GLfloat xMax = getXMax();
     GLfloat yMin = getYMin();
     GLfloat yMax = getYMax();
+*/
 
-    zIncr.x = cWidth / GLfloat ( nx );
-    zIncr.y = cHeight / GLfloat ( ny );
+ //   zIncr.x = cWidth / GLfloat ( nx );
+ //   zIncr.y = cHeight / GLfloat ( ny );
 
-    for ( z.x = xMin; z.x < xMax; z.x += zIncr.x )
-    {
-        for ( z.y = yMin; z.y < yMax; z.y += zIncr.y )
-        {
+   // for ( z.x = xMin; z.x < xMax; z.x += zIncr.x )
+   // {
+     //   for ( z.y = yMin; z.y < yMax; z.y += zIncr.y )
+       // {
 	        /* Calculate point value */ 
-            iterCount = juliaSqTransf ( c, z, maxIter );
+         //   iterCount = juliaSqTransf ( c, z, maxIter );
 
 	        /* Save point values to point */
-	        currPoint.x = z.x;
-	        currPoint.y = z.y;
+	   //     currPoint.x = z.x;
+	     //   currPoint.y = z.y;
 	
-	        currPoint.colorSpot = iterCount;
+	       // currPoint.colorSpot = iterCount;
 
-	        points.push_back ( currPoint );
-        }
-    }
+        //}
+   // }
 }
 
  /************************************************************************
@@ -112,13 +112,12 @@ void julia ( GLint nx, GLint ny, GLint maxIter, vector<point> &points, complexNu
             for the Julia set 
 		complexNum c - The initial point that is used as c in z^2 + c
  ************************************************************************/
-void juliaInit(vector<point> &points, complexNum c)
+void juliaInit(point *points, complexNum c)
 {
     /* Set number of x and y subdivisions and the max iterations. */
     GLint nx = 1000, ny = 1000, maxIter = 1000;
     glClear(GL_COLOR_BUFFER_BIT); // Clear display window.
 
-    points.clear();
 
     julia(nx, ny, maxIter, points, c);
 }

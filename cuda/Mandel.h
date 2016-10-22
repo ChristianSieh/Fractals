@@ -8,10 +8,11 @@
    Known bugs/missing features: N/A
  ************************************************************************/
 
-#ifndef MANDEL_H
-#define MANDEL_H
+#ifndef MANDEL_CUH
+#define MANDEL_CUH
 
 #include <iostream>
+#include <chrono>
 #include <stdlib.h>
 #include <math.h>
 #include "Util.h"
@@ -22,7 +23,7 @@ using namespace std;
  /*********************** function prototypes ***************************/
 complexNum complexSquare(complexNum z);
 GLint mandelSqTransf(complexNum z0, GLint maxIter);
-void mandelbrot(GLint nx, GLint ny, vector<point> &points);
-void mandelInit(vector<point> &points);
+void mandelbrot(GLint nx, GLint ny, point *points, cX cmplx);
+void mandelInit(point *points, cX cmplx);
 
 #endif

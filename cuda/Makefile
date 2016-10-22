@@ -16,8 +16,8 @@ CU = nvcc
 # Turn on optimization and warnings (add -g for debugging with gdb):
 # CPPFLAGS = 		# preprocessor flags
 CFLAGS = -O -Wall
-CXXFLAGS = -O -Wall -std=c++11
-NVCCFlAGS = -O -std=c++11
+CXXFLAGS = -O -Wall -std=c++11 -g
+NVCCFlAGS = -O -Wall -std=c++11 -g
 
 # OpenGL/Mesa libraries for Linux:
 GL_LIBS = -lglut -lGLU -lGL -lm
@@ -38,11 +38,11 @@ GL_LIBS = -lglut -lGLU -lGL -lm
 all:    Fractals
 
 # specific targets
-Fractals:	Fractals.o Julia.o Mandel.o Util.o Colors.o
+Fractals:	Fractals.o Util.o Julia.o  Mandel.o Colors.o
 	$(LINK) -o $@ $^ $(GL_LIBS) $(NVCCFLAGS)
 
 Mandel.o:
-	nvcc -c Mandel.cu
+	nvcc -c Mandel.cu -std=c++11 -g
 
 # generic C and C++ targets for OpenGL programs consisting of only one file
 # type "make filename" (no extension) to build

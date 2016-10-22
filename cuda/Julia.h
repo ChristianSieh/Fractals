@@ -21,7 +21,7 @@ using namespace std;
 
 complexNum juliaComplexSquare ( complexNum z );
 GLint juliaSqTransf ( complexNum z0, complexNum z, GLint maxIter );
-void julia ( GLint nx, GLint ny, GLint maxIter, vector<point> &points, complexNum c );
-void juliaInit(vector<point> &points, complexNum c);
+void julia ( GLint nx, GLint ny, GLint maxIter, point *points, complexNum c );
+void juliaInit(point *points, complexNum c);
 
 #endif
