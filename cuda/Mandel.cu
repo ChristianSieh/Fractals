@@ -17,7 +17,7 @@ static GLint maxIter = 1000;
 /************************************************************************
    Function: complexSquare
    Author: Taken from book
-   Description: calculates the square of a complex number
+   Description: calculates the square of a complex number for parallel
    Parameters:
  complexNum z - a complex number of a point
  ************************************************************************/
@@ -70,12 +70,13 @@ complexNum complexSquare ( complexNum z )
 }
 
 /************************************************************************
-  Function: mandelSqTransf
+  Function: mandelSqTransf_para
   Author: Taken from book
-  Description: squares complex values
-  Parameters:
+  Description: squares complex values in parallel
+  parameters:
  complexNum z0 -
-       Glint maxIter -
+       Glint maxIter - max number of iteratiors
+       points - number of points
 ************************************************************************/
 __global__ void  mandelSqTransf_para (   int maxIter , point *points )
 {
@@ -98,6 +99,7 @@ __global__ void  mandelSqTransf_para (   int maxIter , point *points )
     }
 
      points[i].colorSpot = count;  
+
 }
 /************************************************************************
   Function: mandelbrot
