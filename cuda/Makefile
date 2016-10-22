@@ -44,6 +44,9 @@ Fractals:	Fractals.o Util.o Julia.o  Mandel.o Colors.o
 Mandel.o:
 	nvcc -c Mandel.cu -std=c++11 -g
 
+Julia.o:
+	nvcc -c Julia.cu -std=c++11 -g
+
 # generic C and C++ targets for OpenGL programs consisting of only one file
 # type "make filename" (no extension) to build
 .c:

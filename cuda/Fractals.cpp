@@ -21,10 +21,24 @@
    Output: Graphical window with Mandelbrot or Julia set
    Compilation instructions: Run make file
    Usage: ./Fractals
-   Known bugs/missing features:
-   Modifications:
-   Date                Comment            
-   ----    ------------------------------------------------
+   Known Bugs:
+        1) Zoom value does not scale with how far zoomed in you are. This causes
+        zooming beyond a certain point to take a long time.
+
+        2) There is an occasional bug were the arrow keys will be inverted and
+        you will pan the wrong direction.        
+
+   Benchmarks:
+        Our starting complex width and height were both 5 and as we zoomed
+        in we were looking at a smaller section of the fractal which
+        contained more points.
+
+        Complex Width   Complex Height  Sequential  Parallel    Percentage
+        5               5               1.165 sec   0.169 sec   689%  
+        3.5             3.5             2.427 sec   0.172 sec   1411%
+        1.5             1.5             6.34 sec    0.171 sec   3707% 
+        0.5             0.5             15.3 sec    0.176 sec   8693%   
+        
  ************************************************************************/
 
 #include <GL/freeglut.h>
@@ -50,6 +64,7 @@ viewMod view;
 cX cmplx;
 bool juliaSet = false;
 bool animation = false;
+bool parallel = false;
 int animationSpeed = 100;
 int mouseX = 0;
 int mouseY = 0;
@@ -114,13 +129,13 @@ int main(int argc, char* argv[])
         comPoint.x = (cmplx.cW / ScreenWidth) * initialPoint.x;
         comPoint.y = (cmplx.cH / ScreenHeight) * initialPoint.y;
 
-        juliaInit(points, comPoint);
+        juliaInit(points, comPoint, cmplx, parallel);
         setColorMap(points);
         juliaSet = false;
     }
     else
     {
-        mandelInit(points, cmplx);
+        mandelInit(points, cmplx, parallel);
 	    setColorMap(points);
         juliaSet = true;
     }
@@ -172,11 +187,11 @@ void display(void)
         changeView(view, cmplx);
         if(!juliaSet)
         {
-            juliaInit(points, comPoint);
+            juliaInit(points, comPoint, cmplx, parallel);
         }
         else
         {
-             mandelInit(points, cmplx);
+             mandelInit(points, cmplx, parallel);
         }
         
 	    setColorMap(points);
@@ -282,13 +297,13 @@ void keyboard( unsigned char key, int x, int y )
                 comPoint.x = (cmplx.cW / ScreenWidth) * x;
                 comPoint.y = (cmplx.cH / ScreenHeight) * y;
 
-                juliaInit(points, comPoint);
+                juliaInit(points, comPoint, cmplx, parallel);
                 setColorMap(points);
                 juliaSet = false;
             }
             else
             {
-                mandelInit(points, cmplx);
+                mandelInit(points, cmplx, parallel);
         	    setColorMap(points);
                 juliaSet = true;
             }
@@ -307,8 +322,17 @@ void keyboard( unsigned char key, int x, int y )
             	animation = true;
 	        else
 		        animation = false;
-                glutPostRedisplay();
+            glutPostRedisplay();
 	        break;
+
+        // key: q - switch between sequential and parallel
+        case 113:
+            if(parallel)
+                parallel = false;
+            else
+                parallel = true;
+            glutPostRedisplay();
+            break;
 
 	    // key: r - generate random color map
 	    case 114:
@@ -328,12 +352,6 @@ void keyboard( unsigned char key, int x, int y )
 
 	    // key: = - alt for + on laptops
 	    case 61:
-		    if( view.z < 21556.6 )
-		    {
-	            view.z += .02 ;
-	            view.change = true;
-            }
-
 	    // key: + - zoom in
 	    case 43:
 		    if( view.z < 21556.6 )

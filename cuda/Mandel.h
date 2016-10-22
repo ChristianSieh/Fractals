@@ -24,6 +24,6 @@ using namespace std;
 complexNum complexSquare(complexNum z);
 GLint mandelSqTransf(complexNum z0, GLint maxIter);
 void mandelbrot(GLint nx, GLint ny, point *points, cX cmplx);
-void mandelInit(point *points, cX cmplx);
+void mandelInit(point *points, cX cmplx, bool parallel);
 
 #endif

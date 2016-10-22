@@ -12,6 +12,7 @@
 #define JULIA_H
 
 #include <GL/freeglut.h>
+#include <chrono>
 #include <math.h>
 #include <iostream>
 #include <stdlib.h>
@@ -21,7 +22,7 @@ using namespace std;
 
 complexNum juliaComplexSquare ( complexNum z );
 GLint juliaSqTransf ( complexNum z0, complexNum z, GLint maxIter );
-void julia ( GLint nx, GLint ny, GLint maxIter, point *points, complexNum c );
-void juliaInit(point *points, complexNum c);
+void julia ( GLint nx, GLint ny, point *points, complexNum c, cX cmplx );
+void juliaInit(point *points, complexNum c, cX cmplx, bool parallel);
 
 #endif

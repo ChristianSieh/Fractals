@@ -79,30 +79,25 @@ complexNum complexSquare ( complexNum z )
 ************************************************************************/
 __global__ void  mandelSqTransf_para (   int maxIter , point *points )
 {
+    complexNum z, z0;
+    GLint count = 0;
 
-	    complexNum z, z0;
-	    GLint count = 0;
+    const int i = threadIdx.x + blockIdx.x * blockDim.x;
+    z.x = points[i].x;
+    z.y = points[i].y;
+    z0.x = points[i].x;
+    z0.y = points[i].y;
 
-	    const int i = threadIdx.x + blockIdx.x * blockDim.x;
-	    z.x = points[i].x;
-	    z.y = points[i].y;
-	    z0.x = points[i].x;
-	    z0.y = points[i].y;
+    /* Quit when z * z > 4 */
+    while ( ( z.x * z.x + z.y * z.y <= 4.0 ) && ( count < maxIter ) )
+    {
+	    z = complexSquare_para ( z );
+	    z.x += z0.x;
+	    z.y += z0.y;
+	    count++;
+    }
 
-	    /* Quit when z * z > 4 */
-	    while ( ( z.x * z.x + z.y * z.y <= 4.0 ) && ( count < maxIter ) )
-	    {
-		z = complexSquare_para ( z );
-		z.x += z0.x;
-		z.y += z0.y;
-		count++;
-	    }
-
-	     points[i].x = z.x;
-	     points[i].y = z.y;
-	     points[i].colorSpot = count;
-   
-    
+     points[i].colorSpot = count;  
 }
 /************************************************************************
   Function: mandelbrot
@@ -132,14 +127,13 @@ void mandelbrot_para ( GLint nx, GLint ny, point *points, cX cmplx)
     /* go though x values */
     for ( z.x = cmplx.xCMin; z.x < cmplx.xCMax; z.x += zIncr.x )
     {
-	for ( z.y = cmplx.yCMin; z.y < cmplx.yCMax; z.y += zIncr.y )
+        for ( z.y = cmplx.yCMin; z.y < cmplx.yCMax; z.y += zIncr.y )
         {
-	        /* Save point values to point */
-	        points[i].x = z.x;
-	        points[i].y = z.y;
-		i++;
-	 }	
-	
+            /* Save point values to point */
+            points[i].x = z.x;
+            points[i].y = z.y;
+	        i++;
+         }	
     }
 
     point *d_points;
@@ -150,12 +144,9 @@ void mandelbrot_para ( GLint nx, GLint ny, point *points, cX cmplx)
     int nThreads = 1024;
     int nBlocks = (10000000 + nThreads -1 ) / nThreads;
 
-cerr << "before para " << endl;
-     mandelSqTransf_para<<< nBlocks, nThreads >>>(maxIter,d_points);	
-cerr << "after para" << endl;
-     cudaMemcpy( points, d_points, ((size * 10) * sizeof(point)) , cudaMemcpyDeviceToHost );
-     cudaFree( d_points ); //free memory
-
+    mandelSqTransf_para<<< nBlocks, nThreads >>>(maxIter,d_points);	
+    cudaMemcpy( points, d_points, ((size * 10) * sizeof(point)) , cudaMemcpyDeviceToHost );
+    cudaFree( d_points ); //free memory
 }
 
 /************************************************************************
@@ -186,17 +177,17 @@ void mandelbrot ( GLint nx, GLint ny, point *points, cX cmplx)
         for ( z.y = cmplx.yCMin; z.y < cmplx.yCMax; z.y += zIncr.y )
         {
 	        /* Calculate point value */ 
-                iterCount = mandelSqTransf ( z, maxIter );
+            iterCount = mandelSqTransf ( z, maxIter );
 
 	        /* Save point values to point */
 	        points[i].x = z.x;
 	        points[i].y = z.y;
 	        points[i].colorSpot = iterCount;
                
-		/* push point to stack */
+		    /* push point to stack */
                 
-		i++;
-	 }
+		    i++;
+	    }
     }
 }
 
@@ -206,9 +197,8 @@ void mandelbrot ( GLint nx, GLint ny, point *points, cX cmplx)
   Description: init for mandelbrot points
   Parameters: vector<point> &points - vector of points
 ************************************************************************/
-void mandelInit ( point *points , cX cmplx)
+void mandelInit ( point *points , cX cmplx, bool parallel)
 {
-    bool parallel = true;
     /* Set number of x and y subdivisions and the max iterations. */
     GLint nx = 1000, ny = 1000;//, maxIter = 1500;
     glClear ( GL_COLOR_BUFFER_BIT );
@@ -220,18 +210,13 @@ void mandelInit ( point *points , cX cmplx)
     {
         c = chrono::system_clock::now();
         mandelbrot( nx, ny, points, cmplx);
-	chrono::duration<double> d_cpu = chrono::system_clock::now() - c;
-        cout << "\n\nBenchmarks: CPU " << d_cpu.count() << endl;
+	    chrono::duration<double> d_cpu = chrono::system_clock::now() - c;
     }
     else
     {
         c = chrono::system_clock::now();
-	mandelbrot_para(nx, ny, points, cmplx);
+	    mandelbrot_para(nx, ny, points, cmplx);
         chrono::duration<double> d_gpu = chrono::system_clock::now() - c;
-        cout << "\n\nBenchmarks: GPU " << d_gpu.count() << " sec\n\n";
     }
-
-    
-	
 }
 
